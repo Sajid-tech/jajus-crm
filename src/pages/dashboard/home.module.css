@@ -1,0 +1,28 @@
+.calendar-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.calendar {
+  width: 60%;
+  background-color: lightgray;
+}
+
+.highlighted {
+  background-color: green !important;
+  color: white !important;
+  border: 1px solid red  !important;
+}
+
+.normalDate {
+  color: black !important;
+}
+
+
+@media screen and (max-width : 550px) {
+  .calendar {
+    width: 90%;
+  }
+  
+}
