@@ -668,7 +668,7 @@ const AddSales = (props) => {
                             <div className="col-sm-12 col-md-12 col-xl-1">
                               <IconButton
                                 tabIndex="-1"
-                                onClick={() => removeReceived(index)}
+                                onClick={() => removeUser(index)}
                               >
                                 <Delete />
                               </IconButton>
@@ -683,7 +683,7 @@ const AddSales = (props) => {
                             className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                             color="primary"
                             variant="contained"
-                            onClick={(e) => addReceived(e)}
+                            onClick={(e) => addItem(e)}
                           >
                             Add More
                           </button>

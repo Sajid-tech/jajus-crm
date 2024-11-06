@@ -35,156 +35,174 @@ const AddPurchaseTiles = (props) => {
     purchase_estimate_ref: "",
     purchase_no_of_count: "",
     purchase_sub_data: "",
-    
-});
-const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  });
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+  const useTemplate = {
+    purchase_sub_item: "",
+    purchase_sub_qnty: "0",
+    purchase_sub_qnty_sqr: "0",
+    purchase_sub_rate: "0",
+    purchase_sub_amount: "0",
+  };
 
-const useTemplate = {purchase_sub_item:"",  purchase_sub_qnty:"0",purchase_sub_qnty_sqr:"0",purchase_sub_rate:"0",purchase_sub_amount:"0"};
-    
-const [users, setUsers] = useState([useTemplate]);
+  const [users, setUsers] = useState([useTemplate]);
+  console.log(users , "users")
 
-const [purchase__count, setCount] = useState(1);
+  const [purchase__count, setCount] = useState(1);
 
-const addItem = () => {
-    setUsers([...users,useTemplate]);
+  const addItem = () => {
+    console.log("clicking");
+    setUsers([...users, useTemplate]);
     setCount(purchase__count + 1);
-};
+  };
 
-const onChange = (e, index) =>{
-    const updatedUsers = users.map((user, i) => 
-    index == i 
-    ? Object.assign(user,{[e.target.name]: e.target.value}) 
-    : user );
+  const onChange = (e, index) => {
+    const updatedUsers = users.map((user, i) =>
+      index == i
+        ? Object.assign(user, { [e.target.name]: e.target.value })
+        : user
+    );
     setUsers(updatedUsers);
-};
+  };
 
-const removeUser = (index) => {
+  const removeUser = (index) => {
     const filteredUsers = [...users];
     filteredUsers.splice(index, 1);
     setUsers(filteredUsers);
     setCount(purchase__count - 1);
-};
+  };
 
-const validateOnlyDigits = (inputtxt) => {
+  const validateOnlyDigits = (inputtxt) => {
     var phoneno = /^\d+$/;
-    if(inputtxt.match(phoneno) || inputtxt.length==0){
+    if (inputtxt.match(phoneno) || inputtxt.length == 0) {
       return true;
-    }else{
+    } else {
       return false;
     }
-}
+  };
 
-const validateOnlyNumber = (inputtxt) => {
+  const validateOnlyNumber = (inputtxt) => {
     var phoneno = /^\d*\.?\d*$/;
-    if(inputtxt.match(phoneno) || inputtxt.length==0){
+    if (inputtxt.match(phoneno) || inputtxt.length == 0) {
       return true;
-    }else{
-        return false;
+    } else {
+      return false;
     }
-}
+  };
 
-const [estimate_ref, setEstimateRef] = useState([]);
-useEffect(() => {
-    var theLoginToken = localStorage.getItem('login');   
-    
+  const [estimate_ref, setEstimateRef] = useState([]);
+  useEffect(() => {
+    var theLoginToken = localStorage.getItem("token");
+
     const requestOptions = {
-            method: 'GET', 
-            headers: {
-               'Authorization': 'Bearer '+theLoginToken
-            }             
-    };     
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + theLoginToken,
+      },
+    };
 
-
-    fetch(baseURL+'/web-fetch-estimate', requestOptions)
-    .then(response => response.json())
-    .then(data => setEstimateRef(data.estimate_no)); 
+    fetch(BASE_URL + "/api/web-fetch-estimate", requestOptions)
+      .then((response) => response.json())
+      .then((data) => setEstimateRef(data.estimate_no));
   }, []);
 
-  const [estimate_sub, setEstimateSub] = useState([]);
-useEffect(() => {
-    var theLoginToken = localStorage.getItem('login');   
-    
-    const requestOptions = {
-            method: 'GET', 
-            headers: {
-               'Authorization': 'Bearer '+theLoginToken
-            }             
-    };     
+  // const [estimate_sub, setEstimateSub] = useState([]);
+  // useEffect(() => {
+  //   var theLoginToken = localStorage.getItem("token");
 
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: "Bearer " + theLoginToken,
+  //     },
+  //   };
 
-    fetch(baseURL+'/web-fetch-estimate-sub/'+purchase.purchase_estimate_ref, requestOptions)
-    .then(response => response.json())
-    .then(data => setEstimateSub(data.estimateSub)); 
-  }, [purchase.purchase_estimate_ref]);
+  //    fetch(
+  //       BASE_URL +
+  //         "/api/web-fetch-estimate-sub/" +
+  //         purchase.purchase_estimate_ref,
+  //       requestOptions
+  //     )
+  //     .then((response) => response.json())
+  //     .then((data) => setEstimateSub(data?.estimateSub));
+  // }, [purchase.purchase_estimate_ref]);
 
-const onInputChange = (e) => {
-    if(e.target.name=="purchase_amount"){
-        if(validateOnlyNumber(e.target.value)){
-            setPurchaseTiles({
-            ...purchase,
-            [e.target.name]: e.target.value,
-          });
-        }
-    }else if(e.target.name=="purchase_other"){
-        if(validateOnlyNumber(e.target.value)){
-            setPurchaseTiles({
-            ...purchase,
-            [e.target.name]: e.target.value,
-          });
-        }
-        
-        const total = parseInt(e.target.value || 0)  + parseInt(purchase.purchase_amount || 0) ;
-        setPurchaseTiles(purchase => ({
-            ...purchase,
-            purchase_amount: total
-        }));
-    }else{
+  const onInputChange = (e) => {
+    if (e.target.name == "purchase_amount") {
+      if (validateOnlyNumber(e.target.value)) {
         setPurchaseTiles({
-            ...purchase,
-            [e.target.name]: e.target.value,
+          ...purchase,
+          [e.target.name]: e.target.value,
         });
-    }
-};
+      }
+    } else if (e.target.name == "purchase_other") {
+      if (validateOnlyNumber(e.target.value)) {
+        setPurchaseTiles({
+          ...purchase,
+          [e.target.name]: e.target.value,
+        });
+      }
 
-const QntyCal = (selectedValue) => {
+      const total =
+        parseInt(e.target.value || 0) + parseInt(purchase.purchase_amount || 0);
+      setPurchaseTiles((purchase) => ({
+        ...purchase,
+        purchase_amount: total,
+      }));
+    } else {
+      setPurchaseTiles({
+        ...purchase,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  const QntyCal = (selectedValue) => {
     const tempUsers = [...users];
-    tempUsers[selectedValue].purchase_sub_amount = tempUsers[selectedValue].purchase_sub_qnty * tempUsers[selectedValue].purchase_sub_rate;
+    tempUsers[selectedValue].purchase_sub_amount =
+      tempUsers[selectedValue].purchase_sub_qnty *
+      tempUsers[selectedValue].purchase_sub_rate;
     setUsers(tempUsers);
 
     const result = [];
 
     for (let i = 0; i < users.length; i++) {
-        result.push(users[i].purchase_sub_qnty * users[i].purchase_sub_rate);
+      result.push(users[i].purchase_sub_qnty * users[i].purchase_sub_rate);
     }
 
-    const total = result.reduce((acc, curr) => acc + curr, 0) + parseInt(purchase.purchase_other || 0);
-    
-    setPurchaseTiles(purchase => ({
-        ...purchase,
-        purchase_amount: total
-    }));
-    
-}
+    const total =
+      result.reduce((acc, curr) => acc + curr, 0) +
+      parseInt(purchase.purchase_other || 0);
 
-const RateCal = (selectedValue) => {
+    setPurchaseTiles((purchase) => ({
+      ...purchase,
+      purchase_amount: total,
+    }));
+  };
+
+  const RateCal = (selectedValue) => {
     const tempUsers = [...users];
-    tempUsers[selectedValue].purchase_sub_amount = tempUsers[selectedValue].purchase_sub_qnty * tempUsers[selectedValue].purchase_sub_rate;
+    tempUsers[selectedValue].purchase_sub_amount =
+      tempUsers[selectedValue].purchase_sub_qnty *
+      tempUsers[selectedValue].purchase_sub_rate;
     setUsers(tempUsers);
 
     const result = [];
 
     for (let i = 0; i < users.length; i++) {
-        result.push(users[i].purchase_sub_qnty * users[i].purchase_sub_rate);
+      result.push(users[i].purchase_sub_qnty * users[i].purchase_sub_rate);
     }
 
-    const total = result.reduce((acc, curr) => acc + curr, 0) + parseInt(purchase.purchase_other || 0);
-    
-    setPurchaseTiles(purchase => ({
-        ...purchase,
-        purchase_amount: total
+    const total =
+      result.reduce((acc, curr) => acc + curr, 0) +
+      parseInt(purchase.purchase_other || 0);
+
+    setPurchaseTiles((purchase) => ({
+      ...purchase,
+      purchase_amount: total,
     }));
-}
+  };
 
   const onSubmit = (e) => {
     let data = {
@@ -205,7 +223,7 @@ const RateCal = (selectedValue) => {
     if (v) {
       setIsButtonDisabled(true);
       axios({
-        url: baseURL + "/web-create-purchase",
+        url: BASE_URL + "/api/web-create-purchase",
         method: "POST",
         data,
         headers: {
@@ -254,12 +272,11 @@ const RateCal = (selectedValue) => {
                       <TextField
                         fullWidth
                         required
-                        disable
                         label="Supplier"
                         autoComplete="Name"
                         name="purchase_supplier"
-                                                value={purchase.purchase_supplier}
-                                                onChange={(e) => onInputChange(e)}
+                        value={purchase.purchase_supplier}
+                        onChange={(e) => onInputChange(e)}
                       />
                     </div>
 
@@ -267,7 +284,6 @@ const RateCal = (selectedValue) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Ref Bill No"
                         autoComplete="Name"
                         name="purchase_bill_no"
@@ -281,7 +297,6 @@ const RateCal = (selectedValue) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Other Amount"
                         autoComplete="Name"
                         name="purchase_other"
@@ -293,12 +308,11 @@ const RateCal = (selectedValue) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Total Amount"
                         autoComplete="Name"
                         name="purchase_amount"
-                                                value={purchase.purchase_amount}
-                                                onChange={(e) => onInputChange(e)}
+                        value={purchase.purchase_amount}
+                        onChange={(e) => onInputChange(e)}
                       />
                     </div>
                     <div className="form-group">
@@ -316,14 +330,14 @@ const RateCal = (selectedValue) => {
                         onChange={(e) => onInputChange(e)}
                       >
                         {estimate_ref.map((fabric, key) => (
-                                                    <MenuItem key={fabric.estimate_ref} value={fabric.estimate_ref}>
-                                                        {fabric.estimate_ref}
-                                                    </MenuItem>
-                                                ))}
-                     
+                          <MenuItem
+                            key={fabric.estimate_ref}
+                            value={fabric.estimate_ref}
+                          >
+                            {fabric.estimate_ref}
+                          </MenuItem>
+                        ))}
                       </TextField>
-
-                    
                     </div>
                   </div>
                   <hr />
@@ -340,8 +354,8 @@ const RateCal = (selectedValue) => {
                                 ref={inputRef}
                                 required
                                 name="purchase_sub_item"
-                                                        value={user.purchase_sub_item}
-                                                        onChange={e => onChange(e, index)}
+                                value={user.purchase_sub_item}
+                                onChange={(e) => onChange(e, index)}
                               />
                             </div>
                             <div className="form-group">
@@ -353,7 +367,10 @@ const RateCal = (selectedValue) => {
                                 required
                                 name="purchase_sub_qnty"
                                 value={user.purchase_sub_qnty}
-                                onChange={e => {onChange(e, index); QntyCal(index)}}
+                                onChange={(e) => {
+                                  onChange(e, index);
+                                  QntyCal(index);
+                                }}
                               />
                             </div>
                             <div className="form-group">
@@ -364,8 +381,11 @@ const RateCal = (selectedValue) => {
                                 ref={inputRef}
                                 required
                                 name="purchase_sub_rate"
-                                                        value={user.purchase_sub_rate}
-                                                        onChange={e => {onChange(e, index); RateCal(index) }}
+                                value={user.purchase_sub_rate}
+                                onChange={(e) => {
+                                  onChange(e, index);
+                                  RateCal(index);
+                                }}
                               />
                             </div>{" "}
                             <div className="form-group">
@@ -377,11 +397,11 @@ const RateCal = (selectedValue) => {
                                 required
                                 name="purchase_sub_amount"
                                 value={user.purchase_sub_amount}
-                                onChange={e => onChange(e, index)}
+                                onChange={(e) => onChange(e, index)}
                               />
                             </div>
                             <div className="col-sm-12 col-md-12 col-xl-1">
-                            <IconButton onClick={() => removeUser(index)}>
+                              <IconButton onClick={() => removeUser(index)}>
                                 <Delete />
                               </IconButton>
                             </div>
@@ -395,7 +415,8 @@ const RateCal = (selectedValue) => {
                             className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                             color="primary"
                             variant="contained"
-                            oonClick={(e) => addItem(e)}
+                            type="button"
+                            onClick={(e) => addItem(e)}
                           >
                             Add More
                           </button>
@@ -405,15 +426,14 @@ const RateCal = (selectedValue) => {
                   </div>
 
                   <div className="row mt-4">
-                      <button
-                        type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-                        color="primary"
-                        onClick={(e) => onSubmit(e)}
-                        disabled={isButtonDisabled}
-                      >
-                        Submit
-                      </button>
+                    <button
+                      type="submit"
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+                      color="primary"
+                      onClick={(e) => onSubmit(e)}
+                    >
+                      Submit
+                    </button>
                     <Link to="/purchase-sale-list">
                       <Button className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
                         Cancel

@@ -56,8 +56,11 @@ const EstimateList = () => {
         name: "estimate_date",
         label: "Estimate Date",
         options: {
+          filter: true,
+          sort: false,
           customBodyRender: (estimate_date, tableMeta) => {
-            const id = tableMeta.rowData[tableMeta.columnIndexOfId]; // Adjust this to access `id`
+            const id = tableMeta.rowData[chapterList.columnIndexOfId]; 
+            console.log(id , "id")
             
             return (
               <Link 
@@ -70,29 +73,33 @@ const EstimateList = () => {
           }
         }
       },
-    {
-        name: "chapter_email",
+      {
+        name: "estimate_no",
         label: "Estimate No",
         options: {
           filter: true,
           sort: false,
           customBodyRender: (value, tableMeta) => {
-            const response = tableMeta.rowData; // Get the row data if needed
+            const estimateNo = tableMeta.rowData[tableMeta.columnIndex]; // Accessing `estimate_no`
+            const estimateStatus = tableMeta.rowData[9]; 
+            const id = tableMeta.rowData[3]; 
+           
             const isUserType1 = localStorage.getItem("user_type_id") === '1';
-            const isEstimateStatus = response["estimate_status"] === 'Estimate';
+            const isEstimateStatus = estimateStatus === 'Estimate';
       
             if (isUserType1 || isEstimateStatus) {
               return (
-                <Link title="Create Sales" to={`addsale/${response["id"]}`}>
-                  {response["estimate_no"]}
+                <Link title="Create Sales" to={`addsale/${id}`}>
+                  {estimateNo}
                 </Link>
               );
             } else {
-              return response["estimate_no"];
+              return estimateNo;
             }
           },
         },
-      },
+      }
+      ,
       {
         name: "estimate_customer",
         label: "Customer",

@@ -138,28 +138,8 @@ const PurchaseSale = () => {
                       },
                     }}
                   >
-                    <Link to={`/edit-chapter/${id}`}>
+                    <Link to={`/edit-purchase-tiles/${id}`}>
                       <MdEdit />
-                    </Link>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Edit Data Sources" placement="top">
-                  <IconButton
-                    aria-label="Edit"
-                    className="transition duration-300 ease-in-out transform hover:scale-110 hover:bg-purple-50"
-                    sx={{
-                      width: "35px",
-                      height: "35px",
-                      borderRadius: "8px",
-                      color: "#4CAF50",
-                      "&:hover": {
-                        color: "#388E3C",
-                        backgroundColor: "#f3e8ff",
-                      },
-                    }}
-                  >
-                    <Link to={`/edit-datasource/${id}`}>
-                      <MdConfirmationNumber />
                     </Link>
                   </IconButton>
                 </Tooltip>

@@ -16,7 +16,7 @@ const EditPurchase = (props) => {
   const inputRef = useRef(null);
 
 
-  const {id} = useParams()
+  const {id} = useParams();
 
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
@@ -28,18 +28,21 @@ const EditPurchase = (props) => {
   var todayback = yyyy + "-" + mm + "-" + dd;
 
   const [purchase, setPurchaseGranite] = useState({
-    purchase_date: todayback,
-    purchase_year: "2023-24",
-    purchase_type: "Granites",
-    purchase_item_type: "",
+    purchase_date: "",
     purchase_supplier: "",
     purchase_bill_no: "",
     purchase_amount: "",
+    purchase_item_type: "",
     purchase_other: "",
     purchase_estimate_ref: "",
     purchase_no_of_count: "",
     purchase_sub_data: "",
-  });
+    
+});
+
+console.log(purchase , "purchase")
+
+
 
   const useTemplate = {
     purchase_sub_item: "",
@@ -58,7 +61,7 @@ const EditPurchase = (props) => {
 
   useEffect(() => {
     axios({
-      url: BASE_URL + "/api/web-fetch-purchase-by-id" + id,
+      url: BASE_URL + "/api/web-fetch-purchase-by-id/" + id,
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -233,7 +236,7 @@ const EditPurchase = (props) => {
     if (v) {
       setIsButtonDisabled(true);
       axios({
-        url: BASE_URL + "/web-update-purchase" + id,
+        url: BASE_URL + "/api/web-update-purchase/" + id,
         method: "PUT",
         data,
         headers: {
@@ -283,7 +286,6 @@ const EditPurchase = (props) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Supplier"
                         autoComplete="Name"
                         name="purchase_supplier"
@@ -296,7 +298,6 @@ const EditPurchase = (props) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Ref Bill No"
                         autoComplete="Name"
                         name="purchase_bill_no"
@@ -331,7 +332,6 @@ const EditPurchase = (props) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Other Amount"
                         autoComplete="Name"
                         name="purchase_other"
@@ -343,7 +343,6 @@ const EditPurchase = (props) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Total Amount"
                         autoComplete="Name"
                         name="purchase_amount"
@@ -432,27 +431,16 @@ const EditPurchase = (props) => {
                                 onChange={e => onChange(e, index)}
                               />
                             </div>
-                            <div className="col-sm-12 col-md-12 col-xl-1">
+                            {/* <div className="col-sm-12 col-md-12 col-xl-1">
                             <IconButton onClick={() => removeUser(index)}>
                                 <Delete />
                               </IconButton>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       ))}
 
-                      <div className="row mt-4">
-                        <div className="col-sm-12 col-md-12 col-xl-12">
-                          <button
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-                            color="primary"
-                            variant="contained"
-                            onClick={(e) => addItem(e)}
-                          >
-                            Add More
-                          </button>
-                        </div>
-                      </div>
+                     
                     </div>
                   </div>
 
@@ -462,9 +450,9 @@ const EditPurchase = (props) => {
                         className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                         color="primary"
                         onClick={(e) => onSubmit(e)}
-                        disabled={isButtonDisabled}
+                        // disabled={isButtonDisabled}
                       >
-                        Submit
+                        Update
                       </button>
                     <Link to="/purchase-granite-list">
                       <Button className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">

@@ -174,7 +174,7 @@ const ViewPurchase = () => {
                           <tr>
                             <td
                               colSpan="4"
-                              className="text-right font-semibold pr-4 border-r border-b"
+                              className="text-right font-semibold pr-4 p-2 border-r border-b"
                             >
                               Total
                             </td>

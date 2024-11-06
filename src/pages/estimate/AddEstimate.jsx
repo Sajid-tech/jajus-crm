@@ -94,6 +94,29 @@ const AddEstimate = (props) => {
   };
 
   const [users, setUsers] = useState([useTemplate]);
+  const [estimate_count, setCount] = useState(1);
+
+  const addItem = () => {
+    console.log("clicking");
+    setUsers([...users, useTemplate]);
+    setCount(estimate_count + 1);
+  };
+
+  const onChange = (e, index) => {
+    const updatedUsers = users.map((user, i) =>
+      index == i
+        ? Object.assign(user, { [e.target.name]: e.target.value })
+        : user
+    );
+    setUsers(updatedUsers);
+  };
+
+  const removeUser = (index) => {
+    const filteredUsers = [...users];
+    filteredUsers.splice(index, 1);
+    setUsers(filteredUsers);
+    setCount(estimate_count - 1);
+  };
 
   useEffect(() => {
     axios({
@@ -108,19 +131,18 @@ const AddEstimate = (props) => {
   }, []);
 
   useEffect(() => {
-    var theLoginToken = localStorage.getItem('token');   
-    
+    var theLoginToken = localStorage.getItem("token");
+
     const requestOptions = {
-            method: 'GET', 
-            headers: {
-               'Authorization': 'Bearer '+theLoginToken
-            }             
-    };     
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + theLoginToken,
+      },
+    };
 
-
-    fetch(BASE_URL+'/api/web-fetch-estimate-latest/2023-24', requestOptions)
-    .then(response => response.json())
-    .then(data => setEstimateRef(data?.estimateRef)); 
+    fetch(BASE_URL + "/api/web-fetch-estimate-latest/2023-24", requestOptions)
+      .then((response) => response.json())
+      .then((data) => setEstimateRef(data?.estimateRef));
   }, []);
 
   useEffect(() => {
@@ -412,35 +434,10 @@ const AddEstimate = (props) => {
     }
   };
 
-  const addItem = () => {
-    setUsers([...users, useTemplate]);
-    setCount(estimate_count + 1);
-  };
-
-  const onChange = (e, index) => {
-    const updatedUsers = users.map((user, i) =>
-      index == i
-        ? Object.assign(user, { [e.target.name]: e.target.value })
-        : user
-    );
-    setUsers(updatedUsers);
-  };
-
-  const removeUser = (index) => {
-    const filteredUsers = [...users];
-    filteredUsers.splice(index, 1);
-    setUsers(filteredUsers);
-    setCount(estimate_count - 1);
-  };
-
-
-
   const addReceived = () => {
     setReceived([...received, useTemplate2]);
     setReceivedCount(received_count + 1);
   };
-
-
 
   const onChangeReceived = (e, index) => {
     const updatedreceived = received.map((user, i) =>
@@ -451,8 +448,6 @@ const AddEstimate = (props) => {
     setReceived(updatedreceived);
   };
 
-
-
   const removeReceived = (index) => {
     const filteredreceived = [...received];
     filteredreceived.splice(index, 1);
@@ -460,54 +455,87 @@ const AddEstimate = (props) => {
     setReceivedCount(received_count - 1);
   };
 
-  const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+  const QntyCal = (selectedValue) => {
+    const tempUsers = [...users];
+    tempUsers[selectedValue].estimate_sub_amount =
+      tempUsers[selectedValue].estimate_sub_qnty_sqr *
+      tempUsers[selectedValue].estimate_sub_rate;
+    setUsers(tempUsers);
 
+    const result = [];
 
+    for (let i = 0; i < users.length; i++) {
+      result.push(users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate);
+    }
 
+    const valu = result.reduce((acc, curr) => acc + curr, 0);
 
-  // const onSubmit = (e) => {
-  //   let data = {
-  //     estimate_date: estimate.estimate_date,
-  //     estimate_year: estimate.estimate_year,
-  //     estimate_customer: estimate.estimate_customer,
-  //     estimate_address: estimate.estimate_address,
-  //     estimate_mobile: estimate.estimate_mobile,
-  //     estimate_item_type: estimate.estimate_item_type,
-  //     estimate_tax: estimate.estimate_tax,
-  //     estimate_tempo: estimate.estimate_tempo,
-  //     estimate_loading: estimate.estimate_loading,
-  //     estimate_unloading: estimate.estimate_unloading,
-  //     estimate_other: estimate.estimate_other,
-  //     estimate_gross: estimate.estimate_gross,
-  //     estimate_advance: estimate.estimate_advance,
-  //     estimate_balance: estimate.estimate_balance,
-  //     estimate_no_of_count: estimate_count,
-  //     estimate_sub_data: users,
-  //   };
-  //   e.preventDefault();
-  //   var v = document.getElementById("addIndiv").checkValidity();
-  //   var v = document.getElementById("addIndiv").reportValidity();
-  //   if (v) {
-  //     setIsButtonDisabled(true);
-  //     axios({
-  //       url: BASE_URL + "/api/web-create-estimate",
-  //       method: "POST",
-  //       data,
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //     }).then((res) => {
-  //       if (res.data.code == "200") {
-  //         toast.success("Estimate Created Sucessfully");
-  //         navigate("/estimate-list");
-  //       } else {
-  //         toast.error("Day Book Already Created for a day");
-  //         setIsButtonDisabled(false);
-  //       }
-  //     });
-  //   }
-  // };
+    const total =
+      parseInt(estimate.estimate_tax || 0) +
+      parseInt(estimate.estimate_tempo || 0) +
+      parseInt(estimate.estimate_loading || 0) +
+      parseInt(estimate.estimate_unloading || 0) +
+      parseInt(estimate.estimate_other || 0) +
+      parseInt(valu || 0);
+    setEstimate((estimate) => ({
+      ...estimate,
+      estimate_gross: total,
+    }));
+    const balance =
+      parseInt(estimate.estimate_tax || 0) +
+      parseInt(estimate.estimate_tempo || 0) +
+      parseInt(estimate.estimate_loading || 0) +
+      parseInt(estimate.estimate_unloading || 0) +
+      parseInt(estimate.estimate_other || 0) +
+      parseInt(valu || 0) -
+      parseInt(estimate.estimate_advance || 0);
+    setEstimate((estimate) => ({
+      ...estimate,
+      estimate_balance: balance,
+    }));
+  };
+
+  const RateCal = (selectedValue) => {
+    const tempUsers = [...users];
+    tempUsers[selectedValue].estimate_sub_amount =
+      tempUsers[selectedValue].estimate_sub_qnty_sqr *
+      tempUsers[selectedValue].estimate_sub_rate;
+    setUsers(tempUsers);
+
+    const result = [];
+
+    for (let i = 0; i < users.length; i++) {
+      result.push(users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate);
+    }
+
+    const valu = result.reduce((acc, curr) => acc + curr, 0);
+
+    const total =
+      parseInt(estimate.estimate_tax || 0) +
+      parseInt(estimate.estimate_tempo || 0) +
+      parseInt(estimate.estimate_loading || 0) +
+      parseInt(estimate.estimate_unloading || 0) +
+      parseInt(estimate.estimate_other || 0) +
+      parseInt(valu || 0);
+    setEstimate((estimate) => ({
+      ...estimate,
+      estimate_gross: total,
+    }));
+    const balance =
+      parseInt(estimate.estimate_tax || 0) +
+      parseInt(estimate.estimate_tempo || 0) +
+      parseInt(estimate.estimate_loading || 0) +
+      parseInt(estimate.estimate_unloading || 0) +
+      parseInt(estimate.estimate_other || 0) +
+      parseInt(valu || 0) -
+      parseInt(estimate.estimate_advance || 0);
+    setEstimate((estimate) => ({
+      ...estimate,
+      estimate_balance: balance,
+    }));
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -518,7 +546,7 @@ const AddEstimate = (props) => {
     }
     setIsButtonDisabled(true);
     const formData = {
-          estimate_date: estimate.estimate_date,
+      estimate_date: estimate.estimate_date,
       estimate_year: estimate.estimate_year,
       estimate_customer: estimate.estimate_customer,
       estimate_address: estimate.estimate_address,
@@ -546,13 +574,13 @@ const AddEstimate = (props) => {
         }
       );
 
-      if (response.status == '200') {
+      if (response.status == "200") {
         toast.success("Estimate Created Sucessfully");
         navigate("/estimate-list");
       } else {
-        if (response.status == '401') {
+        if (response.status == "401") {
           toast.error("Estimate Duplicate Entry");
-        } else if (response.status == '402') {
+        } else if (response.status == "402") {
           toast.error("Estimate Duplicate Entry");
         } else {
           toast.error("An unknown error occurred");
@@ -574,14 +602,14 @@ const AddEstimate = (props) => {
             Add Estimate
           </h1>
           <h3 className="text-2xl text-[#464D69] font-semibold ml-2 content-center">
-          Estimate No : <b>{estimate_ref}</b>
+            Estimate No : <b>{estimate_ref}</b>
           </h3>
         </div>
         <div className="row">
           <div className="col-md-12 grid-margin stretch-card">
             <div className="card">
               <div className="card-body">
-                <form onSubmit={onSubmit} autoComplete="off">
+                <form autoComplete="off">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                     <div className="form-group">
                       <TextField
@@ -671,9 +699,9 @@ const AddEstimate = (props) => {
                   <hr />
                   <div className="row mb-4 mt-3">
                     <div className="col-sm-12 col-md-4 col-xl-6">
-                      {received.map((user, index) => (
+                      {users.map((user, index) => (
                         <div className="row " key={index}>
-                          <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mb-6">
+                          <div className="grid grid-cols-1 md:grid-cols-7 gap-6 mb-6">
                             <div className="form-group">
                               {users.received_about !== "New Value" && (
                                 <TextField
@@ -880,14 +908,15 @@ const AddEstimate = (props) => {
                     </div>
                   </div>
                   <div className="row mt-4">
-                      <button
-                        type="submit"
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-                        color="primary"
-                        disabled={isButtonDisabled}
-                      >
-                        Submit
-                      </button>
+                    <button
+                      type="submit"
+                      onClick={(e) => onSubmit(e)}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+                      color="primary"
+                      // disabled={isButtonDisabled}
+                    >
+                      Submit
+                    </button>
                     <Link to="/estimate-list">
                       <Button className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
                         Cancel

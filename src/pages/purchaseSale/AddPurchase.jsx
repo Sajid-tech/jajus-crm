@@ -215,7 +215,7 @@ const AddPurchase = (props) => {
     if (v) {
       setIsButtonDisabled(true);
       axios({
-        url: BASE_URL + "/web-create-purchase",
+        url: BASE_URL + "/api/web-create-purchase",
         method: "POST",
         data,
         headers: {
@@ -265,7 +265,6 @@ const AddPurchase = (props) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Supplier"
                         autoComplete="Name"
                         name="purchase_supplier"
@@ -278,7 +277,6 @@ const AddPurchase = (props) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Ref Bill No"
                         autoComplete="Name"
                         name="purchase_bill_no"
@@ -313,7 +311,6 @@ const AddPurchase = (props) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Other Amount"
                         autoComplete="Name"
                         name="purchase_other"
@@ -325,7 +322,6 @@ const AddPurchase = (props) => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Total Amount"
                         autoComplete="Name"
                         name="purchase_amount"
@@ -444,7 +440,7 @@ const AddPurchase = (props) => {
                         className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                         color="primary"
                         onClick={(e) => onSubmit(e)}
-                        disabled={isButtonDisabled}
+                        // disabled={isButtonDisabled}
                       >
                         Submit
                       </button>

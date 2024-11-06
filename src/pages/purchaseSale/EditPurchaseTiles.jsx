@@ -55,7 +55,7 @@ const EditPurchaseTiles = () => {
 
   useEffect(() => {
     axios({
-        url: baseURL+"/web-fetch-purchase-by-id/" + id,
+        url: BASE_URL+"/api/web-fetch-purchase-by-id/" + id,
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -107,6 +107,7 @@ const EditPurchaseTiles = () => {
   };
 
   const [estimate_ref, setEstimateRef] = useState([]);
+  console.log(estimate_ref , "estimate_ref")
   useEffect(() => {
     var theLoginToken = localStorage.getItem("login");
 
@@ -117,9 +118,9 @@ const EditPurchaseTiles = () => {
       },
     };
 
-    fetch(baseURL + "/web-fetch-estimate", requestOptions)
+    fetch(BASE_URL + "/api/web-fetch-estimate", requestOptions)
       .then((response) => response.json())
-      .then((data) => setEstimateRef(data.estimate_no));
+      .then((data) => setEstimateRef(data?.estimate_no));
   }, []);
 
   const [estimate_sub, setEstimateSub] = useState([]);
@@ -236,7 +237,7 @@ const EditPurchaseTiles = () => {
     if (v) {
       setIsButtonDisabled(true);
       axios({
-        url: BASE_URL + "/web-update-purchase/"+ id,
+        url: BASE_URL + "/api/web-update-purchase/"+ id,
         method: "PUT",
         data,
         headers: {
@@ -285,7 +286,6 @@ const EditPurchaseTiles = () => {
                       <TextField
                         fullWidth
                         required
-                        disable
                         label="Supplier"
                         autoComplete="Name"
                         name="purchase_supplier"
@@ -298,7 +298,6 @@ const EditPurchaseTiles = () => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Ref Bill No"
                         autoComplete="Name"
                         name="purchase_bill_no"
@@ -312,7 +311,6 @@ const EditPurchaseTiles = () => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Other Amount"
                         autoComplete="Name"
                         name="purchase_other"
@@ -324,7 +322,6 @@ const EditPurchaseTiles = () => {
                       <TextField
                         fullWidth
                         required
-                        disabled
                         label="Total Amount"
                         autoComplete="Name"
                         name="purchase_amount"
@@ -417,27 +414,11 @@ const EditPurchaseTiles = () => {
                                 onChange={(e) => onChange(e, index)}
                               />
                             </div>
-                            <div className="col-sm-12 col-md-12 col-xl-1">
-                              <IconButton onClick={() => removeUser(index)}>
-                                <Delete />
-                              </IconButton>
-                            </div>
                           </div>
                         </div>
                       ))}
 
-                      <div className="row mt-4">
-                        <div className="col-sm-12 col-md-12 col-xl-12">
-                          <button
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-                            color="primary"
-                            variant="contained"
-                            oonClick={(e) => addItem(e)}
-                          >
-                            Add More
-                          </button>
-                        </div>
-                      </div>
+                     
                     </div>
                   </div>
 
