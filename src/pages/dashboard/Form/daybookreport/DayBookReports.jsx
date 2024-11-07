@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 
 import { Link } from "react-router-dom";
 import BASE_URL, { baseURL } from "../../../../base/BaseUrl";
+import { Input } from "@material-tailwind/react";
 
 const DayBookReports = () => {
   const componentRef = useRef(null);
@@ -44,8 +45,6 @@ const DayBookReports = () => {
     };
 
     setReportDownload(newReportDownload);
-
-    console.log("Updated reportDownload: ", newReportDownload);
   };
 
   const fetchData = async () => {
@@ -62,7 +61,7 @@ const DayBookReports = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }).then((res) => {
-        console.log(res, "responce");
+        
         setPayment(res.data.payment);
         setReceived(res.data.received);
         setPaymentTotal(res.data.total_payment_amount);
@@ -86,7 +85,7 @@ const DayBookReports = () => {
     e.preventDefault();
 
     axios({
-      url: baseURL + "/web-fetch-daybook-report",
+      url: baseURL + "/web-download-daybook-report",
       method: "POST",
       data,
       headers: {
@@ -159,7 +158,7 @@ const DayBookReports = () => {
             <div className={styles["sub-container"]}>
               <h1>Day Book</h1>
               <div>
-                <TextField
+                <Input
                   fullWidth
                   required
                   type="date"

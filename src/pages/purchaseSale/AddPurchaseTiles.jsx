@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button } from "reactstrap";
 import { Link } from "react-router-dom";
 // import Select from "react-select";
 import { toast } from "react-toastify";
 import BASE_URL, { baseURL } from "../../base/BaseUrl";
-import { IconButton, MenuItem, TextField } from "@mui/material";
+import { IconButton, MenuItem, TextField, Button } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import Layout from "../../layout/Layout";
+import { FaPlus } from "react-icons/fa";
+import { MdKeyboardBackspace } from "react-icons/md";
 // import "./dailyBook.css";
 
 const AddPurchaseTiles = (props) => {
@@ -23,10 +24,10 @@ const AddPurchaseTiles = (props) => {
   today = mm + "/" + dd + "/" + yyyy;
   var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
-
+  const [currentYear, setCurrentYear] = useState(null);
   const [purchase, setPurchaseTiles] = useState({
     purchase_date: todayback,
-    purchase_year: "2023-24",
+    purchase_year: currentYear,
     purchase_type: "Tiles",
     purchase_supplier: "",
     purchase_bill_no: "",
@@ -47,12 +48,27 @@ const AddPurchaseTiles = (props) => {
   };
 
   const [users, setUsers] = useState([useTemplate]);
-  console.log(users , "users")
 
   const [purchase__count, setCount] = useState(1);
 
+
+  useEffect(() => {
+    var theLoginToken = localStorage.getItem("token");
+
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + theLoginToken,
+      },
+    };
+
+    fetch(BASE_URL + "/api/web-fetch-year", requestOptions)
+      .then((response) => response.json())
+      .then((data) => setCurrentYear(data.year?.current_year));
+  }, []);
+
+
   const addItem = () => {
-    console.log("clicking");
     setUsers([...users, useTemplate]);
     setCount(purchase__count + 1);
   };
@@ -207,7 +223,7 @@ const AddPurchaseTiles = (props) => {
   const onSubmit = (e) => {
     let data = {
       purchase_date: purchase.purchase_date,
-      purchase_year: purchase.purchase_year,
+      purchase_year: currentYear,
       purchase_type: purchase.purchase_type,
       purchase_supplier: purchase.purchase_supplier,
       purchase_bill_no: purchase.purchase_bill_no,
@@ -232,7 +248,7 @@ const AddPurchaseTiles = (props) => {
       }).then((res) => {
         if (res.data.code == "200") {
           toast.success("Purchase Created Sucessfully");
-          navigate("/purchase-sale-list");
+          navigate("/purchase-tiles-list");
         } else {
           toast.error("Purchase Created for a day");
           setIsButtonDisabled(false);
@@ -245,19 +261,26 @@ const AddPurchaseTiles = (props) => {
     <Layout>
       <div>
         <div className="flex mb-4 mt-6">
-          <h1 className="text-2xl text-[#464D69] font-semibold ml-2 content-center">
+          <h1 className="flex text-2xl text-[#464D69] font-semibold ml-2 content-center">
+          
+          <Link to="/purchase-tiles-list">
+                <MdKeyboardBackspace className=" text-white bg-[#464D69] p-1 w-10 h-8 cursor-pointer rounded-2xl" />
+              </Link>
+              
+               &nbsp;
             Add Purchase Tiles
           </h1>
         </div>
         <div className="row">
           <div className="col-md-12 grid-margin stretch-card">
-            <div className="card">
-              <div className="card-body">
+         
+            <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
                 <form id="addIndiv" autoComplete="off">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div className="form-group">
                       <TextField
                         fullWidth
+                        size="small"
                         required
                         type="date"
                         label="Date"
@@ -272,6 +295,7 @@ const AddPurchaseTiles = (props) => {
                       <TextField
                         fullWidth
                         required
+                        size="small"
                         label="Supplier"
                         autoComplete="Name"
                         name="purchase_supplier"
@@ -284,6 +308,7 @@ const AddPurchaseTiles = (props) => {
                       <TextField
                         fullWidth
                         required
+                        size="small"
                         label="Ref Bill No"
                         autoComplete="Name"
                         name="purchase_bill_no"
@@ -292,12 +317,13 @@ const AddPurchaseTiles = (props) => {
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div className="form-group">
                       <TextField
                         fullWidth
-                        required
+                        size="small"
                         label="Other Amount"
+                       
                         autoComplete="Name"
                         name="purchase_other"
                         value={purchase.purchase_other}
@@ -307,7 +333,9 @@ const AddPurchaseTiles = (props) => {
                     <div className="form-group">
                       <TextField
                         fullWidth
+                        disabled
                         required
+                        size="small"
                         label="Total Amount"
                         autoComplete="Name"
                         name="purchase_amount"
@@ -320,6 +348,7 @@ const AddPurchaseTiles = (props) => {
                         fullWidth
                         label="Estimate Ref"
                         autoComplete="Name"
+                        size="small"
                         required
                         SelectProps={{
                           MenuProps: {},
@@ -350,6 +379,7 @@ const AddPurchaseTiles = (props) => {
                               <TextField
                                 fullWidth
                                 label="Item"
+                                size="small"
                                 autoComplete="Name"
                                 ref={inputRef}
                                 required
@@ -362,6 +392,7 @@ const AddPurchaseTiles = (props) => {
                               <TextField
                                 fullWidth
                                 label="Qnty"
+                                size="small"
                                 autoComplete="Name"
                                 ref={inputRef}
                                 required
@@ -377,6 +408,7 @@ const AddPurchaseTiles = (props) => {
                               <TextField
                                 fullWidth
                                 label="Rate"
+                                size="small"
                                 autoComplete="Name"
                                 ref={inputRef}
                                 required
@@ -392,6 +424,8 @@ const AddPurchaseTiles = (props) => {
                               <TextField
                                 fullWidth
                                 label="Amount"
+                                disabled
+                                size="small"
                                 autoComplete="Name"
                                 ref={inputRef}
                                 required
@@ -400,7 +434,7 @@ const AddPurchaseTiles = (props) => {
                                 onChange={(e) => onChange(e, index)}
                               />
                             </div>
-                            <div className="col-sm-12 col-md-12 col-xl-1">
+                            <div >
                               <IconButton onClick={() => removeUser(index)}>
                                 <Delete />
                               </IconButton>
@@ -411,15 +445,12 @@ const AddPurchaseTiles = (props) => {
 
                       <div className="row mt-4">
                         <div className="col-sm-12 col-md-12 col-xl-12">
-                          <button
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-                            color="primary"
-                            variant="contained"
+                          <Button
                             type="button"
                             onClick={(e) => addItem(e)}
                           >
-                            Add More
-                          </button>
+                          <FaPlus /> &nbsp;  Add More
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -431,19 +462,21 @@ const AddPurchaseTiles = (props) => {
                       className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                       color="primary"
                       onClick={(e) => onSubmit(e)}
+                      disabled={isButtonDisabled}
                     >
-                      Submit
+                      
+                      {isButtonDisabled ? "Submiting..." : "Submit"}
                     </button>
-                    <Link to="/purchase-sale-list">
-                      <Button className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
+                    <Link to="/purchase-tiles-list">
+                      <button className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
                         Cancel
-                      </Button>
+                      </button>
                     </Link>
                   </div>
                 </form>
               </div>
             </div>
-          </div>
+       
         </div>
       </div>
     </Layout>

@@ -14,14 +14,15 @@
   }
   
 .back-btn{
-    background-color: #976868;
+    background-color: rgb(33 150 243);
+    color: white;
     border-radius: 50%;
     width: 40px !important;
     height: 30px !important;
 }
 
   .button-container {
-    margin-top: 50px;
+    margin-top: 10px;
     background-color: #fff;
     width: 100%;
     padding: 24px;
@@ -50,7 +51,7 @@
     font-weight: 600;
     line-height: 21.6px;
     text-align: left;
-    background: linear-gradient(360deg, #6f53d3 -25.41%, #c5b5ff 131.15%);
+    background: rgb(33 150 243);
     color: #ffffff;
   }
   

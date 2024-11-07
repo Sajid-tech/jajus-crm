@@ -116,9 +116,9 @@ const SaleList = () => {
                       width: "35px",
                       height: "35px",
                       borderRadius: "8px",
-                      color: "#4CAF50",
+                      color: "rgb(30 136 229)",
                       "&:hover": {
-                        color: "#388E3C",
+                        color: "blue",
                         backgroundColor: "#f3e8ff",
                       },
                     }}
@@ -136,9 +136,9 @@ const SaleList = () => {
                       width: "35px",
                       height: "35px",
                       borderRadius: "8px",
-                      color: "#4CAF50",
+                      color: "rgb(30 136 229)",
                       "&:hover": {
-                        color: "#388E3C",
+                        color: "blue",
                         backgroundColor: "#f3e8ff",
                       },
                     }}
@@ -162,8 +162,8 @@ const SaleList = () => {
     elevation: 0,
     responsive: "standard",
     viewColumns: false,
-    download: true,
-    print: true,
+    download: false,
+    print: false,
   };
 
   const data = useMemo(() => (chapterList ? chapterList : []), [chapterList]);
@@ -181,7 +181,7 @@ const SaleList = () => {
           color="secondary"
         />
       )}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      <div className="flex flex-col md:flex-row justify-between items-center mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Sales
         </h3>

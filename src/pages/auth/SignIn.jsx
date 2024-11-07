@@ -5,8 +5,8 @@ import axios from "axios";
 import BASE_URL, { baseURL } from "../../base/BaseUrl";
 import { ContextPanel } from "../../utils/ContextPanel";
 import toast, { Toaster } from "react-hot-toast";
-import styles from './signin.module.css'
-import logo from '../../assets/images/logo_login.png'
+import styles from "./signin.module.css";
+import logo from "../../assets/images/logo_login.png";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -32,17 +32,25 @@ const SignIn = () => {
     try {
       // Send POST request to login API with form data
       const res = await axios.post(`${BASE_URL}/api/web-login`, formData);
-      console.log(res, "res");
+      
       if (res.status === 200) {
         const token = res.data.UserInfo?.token;
-        localStorage.setItem("user_type_id", res.data.UserInfo.user.user_type_id);
+        localStorage.setItem(
+          "user_type_id",
+          res.data.UserInfo.user.user_type_id
+        );
         const username = res.data.UserInfo?.user.name;
         localStorage.setItem("username", username);
         if (token) {
           // Store the token in localStorage
-
+          if (res.data.UserInfo.user.user_type_id == "1") {
+            navigate("/estimate-list");
+          } else if(res.data.UserInfo.user.user_type_id == "4") {
+            navigate("/estimate-list");
+          }else {
+            navigate("/home");
+          }
           localStorage.setItem("token", token);
-          navigate("/home");
         } else {
           toast.error("Login Failed, Token not received.");
         }
@@ -74,15 +82,18 @@ const SignIn = () => {
         position="top-right"
         reverseOrder={false}
       />
-      <section className="flex flex-col lg:flex-row min-h-screen" id={styles['main-container']}>
-        <div 
-        // className="flex-1 lg:w-3/5 m-4 lg:m-12  px-4 lg:px-8"
-        className={styles['sub-container']}
+      <section
+        className="flex flex-col lg:flex-row min-h-screen"
+        id={styles["main-container"]}
+      >
+        <div
+          // className="flex-1 lg:w-3/5 m-4 lg:m-12  px-4 lg:px-8"
+          className={styles["sub-container"]}
         >
           <div className="text-center">
-          <div  className={styles['img-container']}>
-                  <img src={logo} alt="logo" style={{width:'212px'}}/>
-                </div>
+            <div className={styles["img-container"]}>
+              {/* <img src={logo} alt="logo" style={{ width: "212px" }} /> */}
+            </div>
             <Typography
               variant="paragraph"
               color="white"
@@ -105,12 +116,13 @@ const SignIn = () => {
                 User Name
               </Typography>
               <Input
+                style={{ color: "white" }}
                 id="email"
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 size="lg"
-                placeholder="name@mail.com"
+                placeholder="user name"
                 className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
                   className: "before:content-none after:content-none",
@@ -124,6 +136,7 @@ const SignIn = () => {
                 Password
               </Typography>
               <Input
+                style={{ color: "white" }}
                 id="password"
                 name="password"
                 value={password}
@@ -138,7 +151,12 @@ const SignIn = () => {
               />
             </div>
 
-            <Button type="sumbit" disabled={loading} className={styles['signin-btn']} fullWidth>
+            <Button
+              type="sumbit"
+              disabled={loading}
+              className={styles["signin-btn"]}
+              fullWidth
+            >
               {loading ? "Checking..." : "Sign In"}
             </Button>
 
@@ -149,13 +167,15 @@ const SignIn = () => {
                 justifyContent: "center",
               }}
             >
-              <Typography variant="small" className="font-medium text-white-900">
+              <Typography
+                variant="small"
+                className="font-medium text-white-900"
+              >
                 <Link to="/forget-password">Forgot Password</Link>
               </Typography>
             </div>
           </form>
         </div>
-       
       </section>
     </>
   );

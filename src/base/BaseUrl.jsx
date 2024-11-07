@@ -1,4 +1,4 @@
-export const baseURL = 'https://jajufc.in/api1/public/api';
-const BASE_URL = "https://jajufc.in/api1/public";
+export const baseURL = 'https://jajufc.in/api/public/api';
+const BASE_URL = "https://jajufc.in/api/public";
 
 export default BASE_URL;

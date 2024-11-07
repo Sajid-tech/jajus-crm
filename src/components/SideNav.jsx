@@ -6,12 +6,17 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button, IconButton, Typography } from "@material-tailwind/react";
 import { useEffect, useRef } from "react";
-import logo from '../assets/images/logo.png'
+import logo from "../assets/images/logo.png";
+import { FaBook } from "react-icons/fa";
+import { FaCartShopping } from "react-icons/fa6";
+import { MdCurrencyRupee, MdOutlineStickyNote2 } from "react-icons/md";
+import { AiFillProduct } from "react-icons/ai";
+import { IoFileTrayFull } from "react-icons/io5";
+import { BsGraphUpArrow } from "react-icons/bs";
 
 const SideNav = ({ openSideNav, setOpenSideNav }) => {
   const sidenavRef = useRef(null);
   const { pathname } = useLocation();
-
 
   // Hardcoded sidenavType to "dark"
   const sidenavType = "dark";
@@ -52,12 +57,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
       <div className={`relative`}>
         <Link to="/home" className="flex items-center justify-center p-4">
           <div className="flex items-center">
-            <img
-              src={logo}
-              alt="Logo"
-              className="h-12 w-auto"
-            />
-           
+            <img src={logo} alt="Logo" className="h-12 w-auto" />
           </div>
         </Link>
         <IconButton
@@ -71,191 +71,246 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
         </IconButton>
       </div>
-      <div className="m-4">
+      <div className="m-4 scroll-auto">
         <ul className="mb-4 flex flex-col gap-1">
-          <li>
-            <NavLink to="/home">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
+          {localStorage.getItem("user_type_id") == "1"  && 
+            <li>
+              <NavLink to="/estimate-list">
+                {({ isActive }) => (
+                  <Button
+                    variant={isActive ? "gradient" : "text"}
+                    color="white"
+                    className="flex items-center gap-4 px-4 capitalize"
+                    fullWidth
                   >
-                    Dashboard
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
+                    <MdOutlineStickyNote2 className="w-5 h-5 text-inherit" />
+                    <Typography
+                      color="inherit"
+                      className="font-medium capitalize"
+                    >
+                      Estimate
+                    </Typography>
+                  </Button>
+                )}
+              </NavLink>
+            </li>
+}
+{((localStorage.getItem("user_type_id") == "2") || (localStorage.getItem("user_type_id") == "3") ) &&        
+             (
+              <>
+               
+              <li>
+                <NavLink to="/home">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <HomeIcon className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Dashboard
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
 
-          <li>
-            <NavLink to="/daybook-report">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <TableCellsIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Day Book
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/ledger">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <TableCellsIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                       Ledger
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/trialBalance">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <TableCellsIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Trail Balance
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/product">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <TableCellsIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Product
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/estimate-list">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <TableCellsIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Estimate
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/purchase-granite-list">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <TableCellsIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Purchase Granite
-                  </Typography> 
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/purchase-sale-list">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <TableCellsIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Purchase Tiles
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/sale-list">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <TableCellsIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Sales
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-         
+              <li>
+                <NavLink to="/daybook-report">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <FaBook className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Day Book
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/ledger">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <TableCellsIcon className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Ledger
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/trialBalance">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <IoFileTrayFull className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Trail Balance
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              </>
+             )}
 
+              {localStorage.getItem("user_type_id") == "4"  && (
+                <>
+               
+              <li>
+                <NavLink to="/product">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <AiFillProduct className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Product
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/estimate-list">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <MdOutlineStickyNote2 className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Estimate
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/purchase-granite-list">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <FaCartShopping className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Purchase Granite
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/purchase-tiles-list">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <FaCartShopping className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Purchase Tiles
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/sale-list">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <MdCurrencyRupee className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Sales
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/stock-form">
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color="white"
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <BsGraphUpArrow className="w-5 h-5 text-inherit" />
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Stocks
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+           
+              </>
+              )
+              
+              }
           {/* Add more hardcoded routes here as needed */}
         </ul>
       </div>

@@ -221,69 +221,64 @@ const AdddayBook = (props) => {
   return (
     <div>
       <div className="page-header">
-        <h3 className="page-title"> Add Day Book </h3>
+        <h3 className="page-title"> Add  78987Day Book </h3>
       </div>
       <div className="row">
         <div className="col-md-12 grid-margin stretch-card">
           <div className="card">
             <div className="card-body">
               <form id="addIndiv" autoComplete="off">
-                <div className="row">
-                  <div className="col-sm-12 col-md-4 col-xl-3">
-                    <div className="form-group">
-                      <TextField
-                        fullWidth
-                        required
-                        type="date"
-                        label="Date"
-                        autoComplete="Name"
-                        name="payment_date"
-                        value={dayBook.payment_date}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div className="form-group">
+                    <Input
+                      fullWidth
+                      required
+                      type="date"
+                      label="Date"
+                      autoComplete="Name"
+                      name="payment_date"
+                      value={dayBook.payment_date}
+                      onChange={(e) => onInputChange(e)}
+                    />
                   </div>
-                  <div className="col-sm-12 col-md-4 col-xl-3">
-                    <div className="form-group">
-                      <TextField
-                        fullWidth
-                        required
-                        disabled
-                        label="Received Total"
-                        autoComplete="Name"
-                        name="received_total"
-                        value={dayBook.received_total}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
+
+                  <div className="form-group">
+                    <TextField
+                      fullWidth
+                      required
+                      disabled
+                      label="Received Total"
+                      autoComplete="Name"
+                      name="received_total"
+                      value={dayBook.received_total}
+                      onChange={(e) => onInputChange(e)}
+                    />
                   </div>
-                  <div className="col-sm-12 col-md-4 col-xl-3">
-                    <div className="form-group">
-                      <TextField
-                        fullWidth
-                        required
-                        disabled
-                        label="Payment Total"
-                        autoComplete="Name"
-                        name="payment_total"
-                        value={dayBook.payment_total}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
+
+                  <div className="form-group">
+                    <TextField
+                      fullWidth
+                      required
+                      disabled
+                      label="Payment Total"
+                      autoComplete="Name"
+                      name="payment_total"
+                      value={dayBook.payment_total}
+                      onChange={(e) => onInputChange(e)}
+                    />
                   </div>
-                  <div className="col-sm-12 col-md-4 col-xl-3">
-                    <div className="form-group">
-                      <TextField
-                        fullWidth
-                        required
-                        disabled
-                        label="Balance"
-                        autoComplete="Name"
-                        name="payment_balance"
-                        value={dayBook.received_total - dayBook.payment_total}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
+
+                  <div className="form-group">
+                    <TextField
+                      fullWidth
+                      required
+                      disabled
+                      label="Balance"
+                      autoComplete="Name"
+                      name="payment_balance"
+                      value={dayBook.received_total - dayBook.payment_total}
+                      onChange={(e) => onInputChange(e)}
+                    />
                   </div>
                 </div>
                 <hr />
@@ -314,20 +309,6 @@ const AdddayBook = (props) => {
                         <div className="col-sm-12 col-md-12 col-xl-7">
                           <div className="form-group">
                             {user.received_about !== "New Value" && (
-                              // <Select
-                              //     options={accountName.map((option) => (
-                              //     {
-                              //         value: option.account_name,
-                              //         label: option.account_name,
-                              //         name: 'received_about',
-                              //     }))}
-                              //     placeholder="Account"
-                              //     label="Account"
-                              //     name="received_about"
-                              //     required
-                              //     alue={user.received_about}
-                              //     onChange={(e) => onInputChange(e)}
-                              //     />
 
                               <TextField
                                 fullWidth

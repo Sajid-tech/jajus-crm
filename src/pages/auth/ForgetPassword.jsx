@@ -4,8 +4,8 @@ import styles from "./signin.module.css";
 import logo from "../../assets/images/logo_login.png";
 import { useState } from "react";
 import axios from "axios";
-import { baseURL } from "../../base/BaseUrl";
 import { toast } from "react-toastify";
+import BASE_URL from "../../base/BaseUrl";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +23,7 @@ const ForgetPassword = () => {
     var v = document.getElementById("addIndiv").reportValidity();
     if (v) {
       axios({
-        url: baseURL + `/web-send-password?username=${name}&email=${email}`,
+        url: BASE_URL + `/api/web-send-password?username=${name}&email=${email}`,
         method: "POST",
         data,
         headers: {
@@ -34,7 +34,6 @@ const ForgetPassword = () => {
           toast.success("New Password Sent to your Email");
         } else {
           toast.error("Email Not sent.");
-          console.log("getting error");
         }
       });
     }
@@ -48,7 +47,7 @@ const ForgetPassword = () => {
       <div className={styles["sub-container"]}>
         <div className="text-center">
           <div className={styles["img-container"]}>
-            <img src={logo} alt="logo" style={{ width: "212px" }} />
+            {/* <img src={logo} alt="logo" style={{ width: "212px" }} /> */}
           </div>
           <Typography
             variant="paragraph"
@@ -75,9 +74,10 @@ const ForgetPassword = () => {
               id="email"
               name="email"
               value={email}
+              style={{ color : "white"}}
               onChange={(e) => setEmail(e.target.value)}
               size="lg"
-              placeholder="name@mail.com"
+              placeholder="Enter email"
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -95,6 +95,7 @@ const ForgetPassword = () => {
             <Input
               id="name"
               name="name"
+              style={{ color : "white"}}
               size="lg"
               value={name}
               onChange={(e) => setName(e.target.value)}

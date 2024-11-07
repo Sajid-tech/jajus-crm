@@ -1,11 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Button, CircularProgress, IconButton, Tooltip } from "@mui/material";
+import { Link } from "react-router-dom";
+import { CircularProgress} from "@mui/material";
 import MUIDataTable from "mui-datatables";
-import { MdRemoveRedEye } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
-import { MdConfirmationNumber } from "react-icons/md";
 import Layout from "../../layout/Layout";
 import BASE_URL from "../../base/BaseUrl";
 import moment from "moment";
@@ -13,7 +10,6 @@ import moment from "moment";
 const EstimateList = () => {
   const [chapterList, setChapterList] = useState(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrderList = async () => {
@@ -41,17 +37,7 @@ const EstimateList = () => {
 
   const columns = useMemo(
     () => [
-      // {
-      //   name: "estimate_date",
-      //   label: "Date",
-      //   options: {
-      //     filter: true,
-      //     sort: true,
-      //     customBodyRender: (estimate_date) => {
-      //       return moment(estimate_date).format("DD-MM-YYYY");
-      //     },
-      //   },
-      // },
+      
       {
         name: "estimate_date",
         label: "Estimate Date",
@@ -59,13 +45,12 @@ const EstimateList = () => {
           filter: true,
           sort: false,
           customBodyRender: (estimate_date, tableMeta) => {
-            const id = tableMeta.rowData[chapterList.columnIndexOfId]; 
-            console.log(id , "id")
-            
+            const idss = chapterList[tableMeta.rowIndex].id;
             return (
               <Link 
                 title="View Estimate" 
-                to={`view-estimate/${id}`}
+                to={`/view-estimate/${idss}`}
+                style={{color : "rgb(30 136 229)"}}
               >
                 {moment(estimate_date).format("DD-MM-YYYY")}
               </Link>
@@ -80,21 +65,21 @@ const EstimateList = () => {
           filter: true,
           sort: false,
           customBodyRender: (value, tableMeta) => {
-            const estimateNo = tableMeta.rowData[tableMeta.columnIndex]; // Accessing `estimate_no`
-            const estimateStatus = tableMeta.rowData[9]; 
-            const id = tableMeta.rowData[3]; 
-           
-            const isUserType1 = localStorage.getItem("user_type_id") === '1';
-            const isEstimateStatus = estimateStatus === 'Estimate';
+            const estimateStatus = chapterList[tableMeta.rowIndex].estimate_status;
+            const ids = chapterList[tableMeta.rowIndex].id;
+            const isUserType1 = localStorage.getItem("user_type_id");
       
-            if (isUserType1 || isEstimateStatus) {
+            if (isUserType1 == '1') {
+              return value;
+              
+            } else if((estimateStatus == 'Estimate') && (isUserType1 == '2') ) {
               return (
-                <Link title="Create Sales" to={`addsale/${id}`}>
-                  {estimateNo}
+                <Link style={{color : "rgb(30 136 229)"}} title="Create Sales" to={`/add-esales/${ids}`}>
+                  {value}
                 </Link>
               );
-            } else {
-              return estimateNo;
+            }else{
+              return value;
             }
           },
         },
@@ -141,80 +126,7 @@ const EstimateList = () => {
         },
       },
 
-      //   {
-      //     name: "id",
-      //     label: "Action",
-      //     options: {
-      //       filter: false,
-      //       sort: false,
-      //       customBodyRender: (id) => {
-      //         return (
-      //           <div className="flex items-center space-x-2">
-      //             <Tooltip title="View" placement="top">
-      //               <IconButton
-      //                 aria-label="Edit"
-      //                 className="transition duration-300 ease-in-out transform hover:scale-110 hover:bg-purple-50"
-      //                 sx={{
-      //                   width: "35px",
-      //                   height: "35px",
-      //                   borderRadius: "8px",
-      //                   color: "#4CAF50",
-      //                   "&:hover": {
-      //                     color: "#388E3C",
-      //                     backgroundColor: "#f3e8ff",
-      //                   },
-      //                 }}
-      //               >
-      //                 <Link to={`/view-chapter/${id}`}>
-      //                   <MdRemoveRedEye />
-      //                 </Link>
-      //               </IconButton>
-      //             </Tooltip>
-      //             <Tooltip title="Edit" placement="top">
-      //               <IconButton
-      //                 aria-label="Edit"
-      //                 className="transition duration-300 ease-in-out transform hover:scale-110 hover:bg-purple-50"
-      //                 sx={{
-      //                   width: "35px",
-      //                   height: "35px",
-      //                   borderRadius: "8px",
-      //                   color: "#4CAF50",
-      //                   "&:hover": {
-      //                     color: "#388E3C",
-      //                     backgroundColor: "#f3e8ff",
-      //                   },
-      //                 }}
-      //               >
-      //                 <Link to={`/edit-chapter/${id}`}>
-      //                   <MdEdit />
-      //                 </Link>
-      //               </IconButton>
-      //             </Tooltip>
-      //             <Tooltip title="Edit Data Sources" placement="top">
-      //               <IconButton
-      //                 aria-label="Edit"
-      //                 className="transition duration-300 ease-in-out transform hover:scale-110 hover:bg-purple-50"
-      //                 sx={{
-      //                   width: "35px",
-      //                   height: "35px",
-      //                   borderRadius: "8px",
-      //                   color: "#4CAF50",
-      //                   "&:hover": {
-      //                     color: "#388E3C",
-      //                     backgroundColor: "#f3e8ff",
-      //                   },
-      //                 }}
-      //               >
-      //                 <Link to={`/edit-datasource/${id}`}>
-      //                   <MdConfirmationNumber />
-      //                 </Link>
-      //               </IconButton>
-      //             </Tooltip>
-      //           </div>
-      //         );
-      //       },
-      //     },
-      //   },
+      
     ],
     [chapterList]
   );
@@ -224,8 +136,8 @@ const EstimateList = () => {
     elevation: 0,
     responsive: "standard",
     viewColumns: false,
-    download: true,
-    print: true,
+    download: false,
+    print: false,
   };
 
   const data = useMemo(() => (chapterList ? chapterList : []), [chapterList]);
@@ -243,7 +155,7 @@ const EstimateList = () => {
           color="secondary"
         />
       )}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      <div className="flex flex-col md:flex-row justify-between items-center  mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Estimate
         </h3>

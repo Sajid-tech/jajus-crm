@@ -13,6 +13,8 @@ import axios from "axios";
 import Layout from "../../../layout/Layout";
 import { baseURL } from "../../../base/BaseUrl";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { MdKeyboardBackspace } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const TrialBalanceReport = () => {
   const componentRef = useRef();
@@ -113,7 +115,6 @@ const TrialBalanceReport = () => {
         link.click();
       })
       .catch((err) => {
-        console.log(err);
       });
   };
 
@@ -137,12 +138,10 @@ const TrialBalanceReport = () => {
       {!loader && (
         <div className={styles["main-container"]}>
           <div className={styles["sub-container"]}>
-            <h1>
-              {" "}
-              <KeyboardBackspaceIcon
-                className={styles["back-btn"]}
-                onClick={handleBackButton}
-              />{" "}
+            <h1 className="flex"> 
+                 <Link to="/trialBalance">
+                <MdKeyboardBackspace className=" text-white bg-[#464D69] p-1 w-10 h-8 cursor-pointer rounded-2xl" />
+              </Link> &nbsp;
               Trial Balance Report
             </h1>
           </div>

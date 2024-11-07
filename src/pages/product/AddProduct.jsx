@@ -65,7 +65,7 @@ const AddProduct = () => {
       );
 
       if (response.data.code == 200) {
-        toast.success("Product is Updated Successfully");
+        toast.success("Product is Created Successfully");
         navigate("/product");
       } else {
         if (response.data.code == 401) {
@@ -89,8 +89,14 @@ const AddProduct = () => {
       <div>
         {/* Title */}
         <div className="flex mb-4 mt-6">
-          <h1 className="text-2xl text-[#464D69] font-semibold ml-2 content-center">
-          Add Product Type
+
+          <h1 className="flex text-2xl text-[#464D69] font-semibold ml-2 content-center">
+          <Link to="/product">
+                <MdKeyboardBackspace className=" text-white bg-[#464D69] p-1 w-10 h-8 cursor-pointer rounded-2xl" />
+              </Link>
+              
+               &nbsp;
+          Add Product 
           </h1>
         </div>
         <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
@@ -130,7 +136,7 @@ const AddProduct = () => {
                 {isButtonDisabled ? "Submiting..." : "Submit"}
               </button>
               <Link to="/product">
-                <button className="bg-green-500 text-white px-4 py-2 rounded-md">
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
                   Cancel
                 </button>
               </Link>

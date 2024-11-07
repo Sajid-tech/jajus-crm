@@ -80,6 +80,10 @@ const ChangePassword = () => {
             </CardHeader>
 
             <CardBody className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+              <div>
+
               <Input
                 type="password"
                 label="Old Password"
@@ -90,6 +94,9 @@ const ChangePassword = () => {
                 value={changePassword.old_password}
                 onChange={(e) => onInputChange(e)}
               />
+              </div>
+              <div>
+
               <Input
                 type="password"
                 label="New Password"
@@ -100,6 +107,9 @@ const ChangePassword = () => {
                 value={changePassword.password}
                 onChange={(e) => onInputChange(e)}
               />
+              </div>
+              <div>
+
               <Input
                 type="password"
                 label="Confirm Password"
@@ -110,13 +120,14 @@ const ChangePassword = () => {
                 value={changePassword.confirm_password}
                 onChange={(e) => onInputChange(e)}
               />
+              </div>
+              </div>
             </CardBody>
-            <CardFooter className="pt-0">
+            <CardFooter className="pt-0 flex gap-3">
               <Button
                 type="submit"
                 variant="gradient"
                 color="blue"
-                fullWidth
                 style={{ marginBottom: "10px" }}
                 onClick={(e) => onSubmit(e)}
                 disabled={isButtonDisabled}

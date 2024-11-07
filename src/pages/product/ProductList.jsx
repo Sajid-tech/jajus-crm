@@ -82,9 +82,9 @@ const ProductList = () => {
                       width: "35px",
                       height: "35px",
                       borderRadius: "8px",
-                      color: "#4CAF50",
+                      color: "rgb(33 150 243)",
                       "&:hover": {
-                        color: "#388E3C",
+                        color: "blue",
                         backgroundColor: "#f3e8ff",
                       },
                     }}
@@ -108,8 +108,8 @@ const ProductList = () => {
     elevation: 0,
     responsive: "standard",
     viewColumns: false,
-    download: true,
-    print: true,
+    download: false,
+    print: false,
   };
 
   const data = useMemo(() => (chapterList ? chapterList : []), [chapterList]);
@@ -128,9 +128,9 @@ const ProductList = () => {
           color="secondary"
         />
       )}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      <div className="flex flex-col md:flex-row justify-between items-center mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Product Type
+          Product List
         </h3>
 
         <Link
@@ -143,7 +143,7 @@ const ProductList = () => {
       <div className="mt-5">
         <div className="bg-white mt-4 p-4 md:p-6 rounded-lg shadow-lg">
           <MUIDataTable
-            title={"Estimate List"}
+            title={"Product List"}
             data={data}
             columns={columns}
             options={options}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { baseURL } from "../../../../base/BaseUrl";
+import BASE_URL, { baseURL } from "../../../../base/BaseUrl";
 import {
   Button,
   TextField,
@@ -14,6 +14,8 @@ import Layout from "../../../../layout/Layout";
 import styles from "./editdaybook.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
+import { FaPlus } from "react-icons/fa";
+import { Input } from "@material-tailwind/react";
 
 const EditdayBook = () => {
   const location = useLocation();
@@ -38,10 +40,11 @@ const EditdayBook = () => {
   today = mm + "/" + dd + "/" + yyyy;
   var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
+  const [currentYear , setCurrentYear] = useState(null);
 
   const [dayBook, setDayBook] = useState({
     payment_date: null,
-    payment_year: "2023-24",
+    payment_year: currentYear,
     payment_total: "0",
     received_total: "0",
     payment_no_of_count: "",
@@ -74,7 +77,7 @@ const EditdayBook = () => {
 
   const [accountName, setaccountName] = useState([]);
 
-  console.log(payment_count ,received_count , "received_count" )
+ 
 
   useEffect(() => {
     if (inputRef.current) {
@@ -95,6 +98,21 @@ const EditdayBook = () => {
     fetch(baseURL + "/web-fetch-ledger-accountname", requestOptions)
       .then((response) => response.json())
       .then((data) => setaccountName(data.mix));
+  }, []);
+
+  useEffect(() => {
+    var theLoginToken = localStorage.getItem("token");
+
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + theLoginToken,
+      },
+    };
+
+    fetch(BASE_URL + "/api/web-fetch-year", requestOptions)
+      .then((response) => response.json())
+      .then((data) => setCurrentYear(data.year?.current_year));
   }, []);
 
   useEffect(() => {
@@ -212,7 +230,7 @@ const EditdayBook = () => {
 
   const onSubmit = (e) => {
     let data = {
-      payment_year: "2023-24",
+      payment_year: currentYear,
       payment_total: dayBook.payment_total,
       received_total: dayBook.received_total,
       payment_no_of_count: payment_count,
@@ -237,7 +255,7 @@ const EditdayBook = () => {
           toast.success("Day Book Updated Sucessfully");
           setDayBook({
             payment_date: "",
-            payment_year: "2023-24",
+            payment_year: currentYear,
             payment_total: "0",
             received_total: "0",
             payment_no_of_count: "0",
@@ -309,7 +327,7 @@ const EditdayBook = () => {
             <div className={styles["form-sub-container"]}>
               <div className="col-sm-12 col-md-4 col-xl-3">
                 <div className="form-group">
-                  <TextField
+                  <Input
                         fullWidth
                         required
                         type="date"
@@ -318,12 +336,15 @@ const EditdayBook = () => {
                         name="payment_date"
                         value={dayBook.payment_date}
                         disabled={!selectedDate}
+                        labelProps ={{
+                          className:"!text-gray-700"
+                        }}
                   />
                 </div>
               </div>
               <div className="col-sm-12 col-md-4 col-xl-3">
                 <div className="form-group">
-                  <TextField
+                  <Input
                     fullWidth
                     required
                     disabled
@@ -332,12 +353,15 @@ const EditdayBook = () => {
                     name="received_total"
                     value={dayBook.received_total}
                     onChange={(e) => onInputChange(e)}
+                    labelProps ={{
+                      className:"!text-gray-700"
+                    }}
                   />
                 </div>
               </div>
               <div className="col-sm-12 col-md-4 col-xl-3">
                 <div className="form-group">
-                  <TextField
+                  <Input
                     fullWidth
                     required
                     disabled
@@ -346,12 +370,15 @@ const EditdayBook = () => {
                     name="payment_total"
                     value={dayBook.payment_total}
                     onChange={(e) => onInputChange(e)}
+                    labelProps ={{
+                      className:"!text-gray-700"
+                    }}
                   />
                 </div>
               </div>
               <div className="col-sm-12 col-md-4 col-xl-3">
                 <div className="form-group">
-                  <TextField
+                  <Input
                     fullWidth
                     required
                     disabled
@@ -360,20 +387,22 @@ const EditdayBook = () => {
                     name="payment_balance"
                     value={dayBook.received_total - dayBook.payment_total}
                     onChange={(e) => onInputChange(e)}
+                    labelProps ={{
+                      className:"!text-gray-700"
+                    }}
                   />
                 </div>
               </div>
             </div>
             <hr />
             <div className={styles["sub-form-div"]}>
-              <div className={styles["credit-container"]}>
-                <h1>Credit</h1>
+              <div >
+                <h1 className="p-2 text-xl font-bold">Credit</h1>
                 {received.map((user, index) => (
                   <div key={index} className={styles["credit-component"]}>
                     <div className={styles['credit-sub-container']}>
                       <div >
-                        <TextField
-                          variant="standard"
+                        <Input
                           fullWidth
                           label="Amount"
                           autoComplete="Name"
@@ -387,8 +416,9 @@ const EditdayBook = () => {
                           }}
                         />
                       </div>
-                      <div>
+                      <div className="w-[100%]">
                         <Autocomplete
+
                           disablePortal
                           options={accountName}
                           getOptionLabel={(option) =>
@@ -454,13 +484,17 @@ const EditdayBook = () => {
                           }}
                           renderInput={(params) => (
                             <TextField
-                              variant="standard"
                               required
                               {...params}
                               label="Account"
                               InputLabelProps={{ shrink: true }}
                               autoComplete="off"
                               name="received_about"
+                              sx={{
+                                "& .MuiInputBase-root": {
+                                  padding: "1px", 
+                                },
+                              }}
                             />
                           )}
                         />
@@ -476,19 +510,18 @@ const EditdayBook = () => {
                     </div>
                   </div>
                 ))}
-                <div className={styles["button-div"]}>
-                  <Button onClick={(e) => addReceived(e)}>Add More</Button>
+                <div>
+                  <Button onClick={(e) => addReceived(e)}> <FaPlus/> &nbsp; Add More</Button>
                 </div>
               </div>
-              <div className={styles["debit-container"]}>
-                <h1>Dedit</h1>
+              <div>
+                <h1 className="p-2 text-xl font-bold">Dedit</h1>
                 {payment.map((user, index) => (
                   <div key={index} className={styles["debit-component"]}>
                     <div  className={styles['debit-sub-container']}>
                       <div>
-                        <TextField
+                        <Input
                           fullWidth
-                          variant="standard"
                           label="Amount"
                           autoComplete="Name"
                           required
@@ -567,13 +600,17 @@ const EditdayBook = () => {
                           }}
                           renderInput={(params) => (
                             <TextField
-                              variant="standard"
                               required
                               {...params}
                               label="Account"
                               InputLabelProps={{ shrink: true }}
                               autoComplete="off"
                               name="payment_about"
+                              sx={{
+                                "& .MuiInputBase-root": {
+                                  padding: "1px", 
+                                },
+                              }}
                             />
                           )}
                         />
@@ -589,33 +626,36 @@ const EditdayBook = () => {
                     </div>
                   </div>
                 ))}
-                <div className={styles["button-div"]}>
-                  <Button onClick={(e) => addPayment(e)}>Add More</Button>
+                <div>
+                  <Button
+                   className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+                   onClick={(e) => addPayment(e)}> <FaPlus/> &nbsp; Add More</Button>
                 </div>
               </div>
             </div>
             <div className={styles["submit-container"]}>
-              <div className={styles["submit-sub-container"]}>
+              <div >
                 {parseInt(dayBook.payment_total) -
                   parseInt(dayBook.received_total) ==
                 0 ? (
-                  <Button
+                  <button
+                   className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                     type="submit"
                     color="primary"
                     onClick={(e) => onSubmit(e)}
                     disabled={isButtonDisabled}
                   >
                     Update
-                  </Button>
+                  </button>
                 ) : (
                   ""
                 )}
-                <Button
-                  className={styles["cancel-btn"]}
+                <button
+                 className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                   onClick={handleCancelButton}
                 >
                   Cancel
-                </Button>
+                </button>
               </div>
             </div>
           </form>

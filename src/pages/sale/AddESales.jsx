@@ -24,7 +24,7 @@ const type = [
   },
 ];
 
-const AddSales = (props) => {
+const AddESales = (props) => {
   const navigate = useNavigate();
   const inputRef = useRef(null);
 
@@ -46,7 +46,7 @@ const AddSales = (props) => {
     estimate_customer: "",
     estimate_address: "",
     estimate_mobile: "",
-    sales_item_type: "",
+    estimate_item_type: "",
     estimate_tax: "",
     estimate_tempo: "",
     estimate_loading: "",
@@ -62,12 +62,12 @@ const AddSales = (props) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const useTemplate = {
-    sales_sub_type: "",
-    sales_sub_item: "",
-    sales_sub_qnty_sqr: "",
-    sales_sub_qnty: "",
-    sales_sub_rate: "",
-    sales_sub_amount: "",
+    estimate_sub_type: "",
+    estimate_sub_item: "",
+    estimate_sub_qnty_sqr: "",
+    estimate_sub_qnty: "",
+    estimate_sub_rate: "",
+    estimate_sub_amount: "",
     sales_sub_item_original: "",
   };
 
@@ -87,7 +87,7 @@ const AddSales = (props) => {
 
     fetch(BASE_URL + "/api/web-fetch-year", requestOptions)
       .then((response) => response.json())
-      .then((data) => setCurrentYear(data.year?.current_year));
+      .then((data) => setCurrentYear(data.year?.from_date));
   }, []);
 
 
@@ -130,13 +130,26 @@ const AddSales = (props) => {
     }
   };
 
+  useEffect(() => {
+    axios({
+      url: BASE_URL + "/api/web-fetch-estimate-by-id/" + id,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }).then((res) => {
+      setEstimate(res.data.estimate);
+      setUsers(res.data.estimateSub);
+    });
+  }, []);
+
   const [product, setProduct] = useState([]);
   useEffect(() => {
     axios({
       url:
         BASE_URL +
         "/api/web-fetch-product-types/" +
-        estimate.sales_item_type,
+        estimate.estimate_item_type,
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -144,7 +157,7 @@ const AddSales = (props) => {
     }).then((res) => {
       setProduct(res.data.product_type);
     });
-  }, [estimate.sales_item_type]);
+  }, [estimate.estimate_item_type]);
 
   const [productTypeGroup, setProductTypeGroup] = useState([]);
   useEffect(() => {
@@ -185,7 +198,7 @@ const AddSales = (props) => {
 
       for (let i = 0; i < users.length; i++) {
         result.push(
-          users[i].sales_sub_qnty_sqr * users[i].sales_sub_rate
+          users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate
         );
       }
 
@@ -226,7 +239,7 @@ const AddSales = (props) => {
 
       for (let i = 0; i < users.length; i++) {
         result.push(
-          users[i].sales_sub_qnty_sqr * users[i].sales_sub_rate
+          users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate
         );
       }
 
@@ -267,7 +280,7 @@ const AddSales = (props) => {
 
       for (let i = 0; i < users.length; i++) {
         result.push(
-          users[i].sales_sub_qnty_sqr * users[i].sales_sub_rate
+          users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate
         );
       }
 
@@ -308,7 +321,7 @@ const AddSales = (props) => {
 
       for (let i = 0; i < users.length; i++) {
         result.push(
-          users[i].sales_sub_qnty_sqr * users[i].sales_sub_rate
+          users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate
         );
       }
 
@@ -349,7 +362,7 @@ const AddSales = (props) => {
 
       for (let i = 0; i < users.length; i++) {
         result.push(
-          users[i].sales_sub_qnty_sqr * users[i].sales_sub_rate
+          users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate
         );
       }
 
@@ -397,7 +410,7 @@ const AddSales = (props) => {
 
       for (let i = 0; i < users.length; i++) {
         result.push(
-          users[i].sales_sub_qnty_sqr * users[i].sales_sub_rate
+          users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate
         );
       }
 
@@ -432,15 +445,15 @@ const AddSales = (props) => {
 
   const QntyCal = (selectedValue) => {
     const tempUsers = [...users];
-    tempUsers[selectedValue].sales_sub_amount =
-      tempUsers[selectedValue].sales_sub_qnty_sqr *
-      tempUsers[selectedValue].sales_sub_rate;
+    tempUsers[selectedValue].estimate_sub_amount =
+      tempUsers[selectedValue].estimate_sub_qnty_sqr *
+      tempUsers[selectedValue].estimate_sub_rate;
     setUsers(tempUsers);
 
     const result = [];
 
     for (let i = 0; i < users.length; i++) {
-      result.push(users[i].sales_sub_qnty_sqr * users[i].sales_sub_rate);
+      result.push(users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate);
     }
 
     const valu = result.reduce((acc, curr) => acc + curr, 0);
@@ -472,15 +485,15 @@ const AddSales = (props) => {
 
   const RateCal = (selectedValue) => {
     const tempUsers = [...users];
-    tempUsers[selectedValue].sales_sub_amount =
-      tempUsers[selectedValue].sales_sub_qnty_sqr *
-      tempUsers[selectedValue].sales_sub_rate;
+    tempUsers[selectedValue].estimate_sub_amount =
+      tempUsers[selectedValue].estimate_sub_qnty_sqr *
+      tempUsers[selectedValue].estimate_sub_rate;
     setUsers(tempUsers);
 
     const result = [];
 
     for (let i = 0; i < users.length; i++) {
-      result.push(users[i].sales_sub_qnty_sqr * users[i].sales_sub_rate);
+      result.push(users[i].estimate_sub_qnty_sqr * users[i].estimate_sub_rate);
     }
 
     const valu = result.reduce((acc, curr) => acc + curr, 0);
@@ -511,23 +524,23 @@ const AddSales = (props) => {
   };
   const onSubmit = (e) => {
     let data = {
-
       sales_date: estimate.estimate_date,
-            sales_year: currentYear,
-            sales_customer: estimate.estimate_customer,
-            sales_address: estimate.estimate_address,
-            sales_mobile: estimate.estimate_mobile,
-            sales_item_type: estimate.sales_item_type,
-            sales_tax: estimate.estimate_tax,
-            sales_tempo: estimate.estimate_tempo,
-            sales_loading: estimate.estimate_loading,
-            sales_unloading: estimate.estimate_unloading,
-            sales_other: estimate.estimate_other,
-            sales_gross: estimate.estimate_gross,
-            sales_advance: estimate.estimate_advance,
-            sales_balance: estimate.estimate_balance,
-            sales_no_of_count: estimate_count,
-            sales_sub_data: users,
+      sales_year: estimate.estimate_year,
+      sales_customer: estimate.estimate_customer,
+      sales_address: estimate.estimate_address,
+      sales_mobile: estimate.estimate_mobile,
+      sales_item_type: estimate.estimate_item_type,
+      sales_tax: estimate.estimate_tax,
+      sales_tempo: estimate.estimate_tempo,
+      sales_loading: estimate.estimate_loading,
+      sales_unloading: estimate.estimate_unloading,
+      sales_other: estimate.estimate_other,
+      sales_gross: estimate.estimate_gross,
+      sales_advance: estimate.estimate_advance,
+      sales_balance: estimate.estimate_balance,
+      sales_no_of_count: estimate.estimate_no_of_count,
+      sales_sub_data: users,
+      sales_estimate_ref: id,
     };
     e.preventDefault();
     var v = document.getElementById("addIndiv").checkValidity();
@@ -535,7 +548,7 @@ const AddSales = (props) => {
     if (v) {
       setIsButtonDisabled(true);
       axios({
-        url: BASE_URL + "/api/web-create-sales-direct",
+        url: BASE_URL + "/api/web-create-sales",
         method: "POST",
         data,
         headers: {
@@ -637,8 +650,8 @@ const AddSales = (props) => {
                         MenuProps: {},
                       }}
                       select
-                      name="sales_item_type"
-                      value={estimate.sales_item_type}
+                      name="estimate_item_type"
+                      value={estimate.estimate_item_type}
                       onChange={(e) => onInputChange(e)}
                     >
                       {productTypeGroup.map((fabric, key) => (
@@ -660,8 +673,8 @@ const AddSales = (props) => {
                               required={true}
                               title="Type"
                               type="whatsappDropdown"
-                              name="sales_sub_type"
-                              value={user.sales_sub_type}
+                              name="estimate_sub_type"
+                              value={user.estimate_sub_type}
                               onChange={(e) => onChange(e, index)}
                               options={type}
                             />
@@ -673,8 +686,8 @@ const AddSales = (props) => {
                               label="Item"
                               autoComplete="Name"
                               ref={inputRef}
-                              name="sales_sub_item"
-                              value={user.sales_sub_item}
+                              name="estimate_sub_item"
+                              value={user.estimate_sub_item}
                               onChange={(e) => onChange(e, index)}
                               size="small"
                             />
@@ -712,8 +725,8 @@ const AddSales = (props) => {
                               autoComplete="Name"
                               ref={inputRef}
                               required
-                              name="sales_sub_qnty"
-                              value={user.sales_sub_qnty}
+                              name="estimate_sub_qnty"
+                              value={user.estimate_sub_qnty}
                               onChange={(e) => {
                                 onChange(e, index);
                               }}
@@ -727,8 +740,8 @@ const AddSales = (props) => {
                               ref={inputRef}
                               size="small"
                               required
-                              name="sales_sub_qnty_sqr"
-                              value={user.sales_sub_qnty_sqr}
+                              name="estimate_sub_qnty_sqr"
+                              value={user.estimate_sub_qnty_sqr}
                               onChange={(e) => {
                                 onChange(e, index);
                                 QntyCal(index);
@@ -743,8 +756,8 @@ const AddSales = (props) => {
                               ref={inputRef}
                               size="small"
                               required
-                              name="sales_sub_rate"
-                              value={user.sales_sub_rate}
+                              name="estimate_sub_rate"
+                              value={user.estimate_sub_rate}
                               onChange={(e) => {
                                 onChange(e, index);
                                 RateCal(index);
@@ -759,8 +772,8 @@ const AddSales = (props) => {
                               ref={inputRef}
                               size="small"
                               required
-                              name="sales_sub_amount"
-                              value={user.sales_sub_amount}
+                              name="estimate_sub_amount"
+                              value={user.estimate_sub_amount}
                               onChange={(e) => onChange(e, index)}
                             />
                           </div>
@@ -906,4 +919,4 @@ const AddSales = (props) => {
   );
 };
 
-export default AddSales;
+export default AddESales;

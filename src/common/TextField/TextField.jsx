@@ -136,95 +136,7 @@ const Fields = (props) => {
           </ToggleButtonGroup>
         </FormControl>
       )}
-      {/* {props.type === "transaction1Dropdown" && (
-         <FormControl fullWidth>
-         <InputLabel
-           shrink={true}
-           sx={{
-             position: "relative",
-             fontSize: "1rem",
-           }}
-         >
-           <span className="text-xl">
-             {props.title}{" "}
-             {props.required ? <span className="text-red-700">*</span> : null}
-           </span>
-         </InputLabel>
-   
-         <ToggleButtonGroup
-           value={selectedValue}
-           exclusive
-           onClick={handleClick}
-           aria-label="custom toggle dropdown"
-           sx={{
-             display: "flex",
-             borderRadius: "5px",
-             height: "40px",
-             width: "100%",
-             backgroundColor: selectedValue ? "#1C64F2" : "transparent",
-             color: selectedValue ? "white" : "inherit",
-             "& .MuiToggleButtonGroup-grouped": {
-               width: "100%",
-               border: "none",
-               justifyContent: "space-between",
-             },
-           }}
-         >
-           <ToggleButton
-             value={selectedValue}
-             sx={{
-               fontSize: "13px",
-               width: "100%",
-               color: selectedValue ? "white" : "inherit",
-               backgroundColor: selectedValue ? "#1C64F2" : "transparent",
-               "&:hover": {
-                 backgroundColor: selectedValue ? "#1654C0" : "#E0E0E0",
-               },
-             }}
-           >
-             {props.options.find((option) => option.value === selectedValue)?.label || "Select"}
-           </ToggleButton>
-         </ToggleButtonGroup>
-   
-         <Popover
-           id={id}
-           open={open}
-           anchorEl={anchorEl}
-           onClose={handleClose}
-           anchorOrigin={{
-             vertical: "bottom",
-             horizontal: "left",
-           }}
-           transformOrigin={{
-             vertical: "top",
-             horizontal: "left",
-           }}
-         >
-           <Box sx={{ display: "flex", flexDirection: "column" }}>
-             {props.options.map((data, key) => (
-               <ToggleButton
-                 key={key}
-                 value={data.value}
-                 selected={selectedValue === data.value}
-                 onClick={(event) => handleSelect(event, data.value)}
-                 sx={{
-                   fontSize: "13px",
-                   color: selectedValue === data.value ? "white" : "inherit",
-                   backgroundColor: selectedValue === data.value ? "#1C64F2" : "transparent",
-                   "&:hover": {
-                     backgroundColor: selectedValue === data.value ? "#1654C0" : "#E0E0E0",
-                   },
-                 }}
-               >
-                 {data.label}
-               </ToggleButton>
-             ))}
-           </Box>
-         </Popover>
-       </FormControl>
-     
-   
-      )} */}
+      
 
       {props.type === "textField" && (
         <>
@@ -427,6 +339,37 @@ const Fields = (props) => {
               {props.options?.map((data, key) => (
                 <MenuItem key={key} value={data.value}>
                   {data.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </>
+      )}
+      {props.type === "estimateItemDropdown" && (
+        <>
+          <FormControl fullWidth>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                {props.title}{" "}
+                {props.required ? (
+                  <span className="text-red-700">*</span>
+                ) : null}
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name={props.name}
+              value={props.value}
+              label={props.title}
+              onChange={props.onchange}
+              {...props}
+              required={props.required === true || props.required === "true"}
+            >
+              {props.options?.map((data, key) => (
+                <MenuItem key={key} value={data.product_type_group}>
+                  {data.product_type_group}
                 </MenuItem>
               ))}
             </Select>

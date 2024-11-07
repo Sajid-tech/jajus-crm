@@ -5,6 +5,7 @@ import Layout from "../../layout/Layout";
 import "react-calendar/dist/Calendar.css";
 import styles from "./home.module.css";
 import axios from "axios";
+import BASE_URL from "../../base/BaseUrl";
 
 const Home = () => {
   const [date, setDate] = useState(new Date());
@@ -15,7 +16,13 @@ const Home = () => {
     const fetchDates = async () => {
       try {
         const response = await axios.get(
-          "https://jajufc.online/api/public/api/web-fetch-daybook-date"
+          `${BASE_URL}/api/web-fetch-daybook-date`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+
         );
         if (response.status === 200) {
           const apiDates = response.data.received_date.map(

@@ -9,6 +9,7 @@ import BASE_URL, { baseURL } from "../../base/BaseUrl";
 import { IconButton, MenuItem, TextField } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import Layout from "../../layout/Layout";
+import { MdKeyboardBackspace } from "react-icons/md";
 // import "./dailyBook.css";
 
 const EditPurchase = (props) => {
@@ -40,11 +41,8 @@ const EditPurchase = (props) => {
     
 });
 
-console.log(purchase , "purchase")
-
-
-
   const useTemplate = {
+    id:"",
     purchase_sub_item: "",
     purchase_sub_qnty: "",
     purchase_sub_qnty_sqr: "",
@@ -226,7 +224,7 @@ console.log(purchase , "purchase")
       purchase_bill_no: purchase.purchase_bill_no,
       purchase_other: purchase.purchase_other,
       purchase_amount: purchase.purchase_amount,
-      purchase_no_of_count: purchase__count,
+      purchase_no_of_count: purchase.purchase_no_of_count,
       purchase_estimate_ref: purchase.purchase_estimate_ref,
       purchase_sub_data: users,
     };
@@ -259,20 +257,24 @@ console.log(purchase , "purchase")
     <Layout>
       <div>
         <div className="flex mb-4 mt-6">
-          <h1 className="text-2xl text-[#464D69] font-semibold ml-2 content-center">
+          <h1 className="flex text-2xl text-[#464D69] font-semibold ml-2 content-center">
+          <Link to="/purchase-granite-list">
+                <MdKeyboardBackspace className=" text-white bg-[#464D69] p-1 w-10 h-8 cursor-pointer rounded-2xl" />
+              </Link> &nbsp;
             Edit Purchase Granite
           </h1>
         </div>
         <div className="row">
           <div className="col-md-12 grid-margin stretch-card">
-            <div className="card">
-              <div className="card-body">
+       
+            <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
                 <form id="addIndiv" autoComplete="off">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div className="form-group">
                       <TextField
                         fullWidth
                         required
+                         size="small"
                         type="date"
                         label="Date"
                         autoComplete="Name"
@@ -286,6 +288,7 @@ console.log(purchase , "purchase")
                       <TextField
                         fullWidth
                         required
+                         size="small"
                         label="Supplier"
                         autoComplete="Name"
                         name="purchase_supplier"
@@ -298,6 +301,7 @@ console.log(purchase , "purchase")
                       <TextField
                         fullWidth
                         required
+                         size="small"
                         label="Ref Bill No"
                         autoComplete="Name"
                         name="purchase_bill_no"
@@ -312,6 +316,7 @@ console.log(purchase , "purchase")
                         fullWidth
                         label="Item Type"
                         required
+                         size="small"
                         SelectProps={{
                           MenuProps: {},
                         }}
@@ -332,6 +337,7 @@ console.log(purchase , "purchase")
                       <TextField
                         fullWidth
                         required
+                         size="small"
                         label="Other Amount"
                         autoComplete="Name"
                         name="purchase_other"
@@ -343,6 +349,8 @@ console.log(purchase , "purchase")
                       <TextField
                         fullWidth
                         required
+                        disabled
+                         size="small"
                         label="Total Amount"
                         autoComplete="Name"
                         name="purchase_amount"
@@ -361,6 +369,7 @@ console.log(purchase , "purchase")
                               <TextField
                                 fullWidth
                                 label="Item"
+                                 size="small"
                                 autoComplete="Name"
                                 required
                                 SelectProps={{
@@ -386,6 +395,7 @@ console.log(purchase , "purchase")
                             <div className="form-group">
                               <TextField
                                 fullWidth
+                                 size="small"
                                 label="Qnty in Piece"
                                 autoComplete="Name"
                                 ref={inputRef}
@@ -398,6 +408,7 @@ console.log(purchase , "purchase")
                             <div className="form-group">
                               <TextField
                                 fullWidth
+                                 size="small"
                                 label="Qnty in Sqr ft"
                                 autoComplete="Name"
                                 ref={inputRef}
@@ -410,6 +421,7 @@ console.log(purchase , "purchase")
                             <div className="form-group">
                               <TextField
                                 fullWidth
+                                 size="small"
                                 label="Rate"
                                 autoComplete="Name"
                                 ref={inputRef}
@@ -422,6 +434,7 @@ console.log(purchase , "purchase")
                             <div className="form-group">
                               <TextField
                                 fullWidth
+                                 size="small"
                                 label="Amount"
                                 autoComplete="Name"
                                 ref={inputRef}
@@ -462,7 +475,7 @@ console.log(purchase , "purchase")
                   </div>
                 </form>
               </div>
-            </div>
+          
           </div>
         </div>
       </div>

@@ -59,8 +59,6 @@
     padding: 0px 20px;
       margin-top: 10px;
       gap: 20px;
-     display: grid;
-     grid-template-columns: repeat(2,1fr);
   }
   
   
@@ -82,8 +80,8 @@
     .table td {
       padding: 5px 15px;
       border: 1px solid #ddd;
-      text-align: left;
-      font-size: 12px;
+      text-align: center;
+      font-size: 14px;
     }
     
     .table td:first-child {
@@ -118,7 +116,7 @@
 
     .header-container{
          display: flex;
-         justify-content: space-evenly;
+         justify-content: center;
     }
     
    

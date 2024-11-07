@@ -31,7 +31,7 @@ padding: 20px;
     font-weight: 600;
     line-height: 21.6px;
     text-align: left;
-    background: linear-gradient(360deg, #6F53D3 -25.41%, #C5B5FF 131.15%);
+    background: rgb(33 150 243);
     color: #ffffff;
   }
 
@@ -43,6 +43,6 @@ padding: 20px;
     font-weight: 600;
     line-height: 21.6px;
     text-align: left;
-    background: linear-gradient(360deg, #6F53D3 -25.41%, #C5B5FF 131.15%);
+    background: rgb(33 150 243);
     color: #ffffff;
   }

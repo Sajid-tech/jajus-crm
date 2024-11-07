@@ -36,6 +36,10 @@ import EditSales from "./pages/sale/EditSales";
 import ViewSales from "./pages/sale/ViewSales";
 import ViewEstimate from "./pages/estimate/ViewEstimate";
 import ViewPurchase from "./pages/purchaseSale/ViewPurchase";
+import AddESales from "./pages/sale/AddESales";
+import ViewPurchaseTiles from "./pages/purchaseSale/ViewPurchaseTiles";
+import StockForm from "./pages/stocks/StockForm";
+import StockReport from "./pages/stocks/StockReport";
 
 const App = () => {
   return (
@@ -58,11 +62,15 @@ const App = () => {
         <Route path="/view-estimate/:id" element={<ProtectedRoute element={<ViewEstimate />} />} />
         <Route path="/sale-list" element={<ProtectedRoute element={<SaleList />} />} />
         <Route path="/add-sales" element={<ProtectedRoute element={<AddSales />} />} />
+        <Route path="/add-esales/:id" element={<ProtectedRoute element={<AddESales />} />} />
         <Route path="/view-sales/:id" element={<ProtectedRoute element={<ViewSales />} />} />
         <Route path="/edit-sales/:id" element={<ProtectedRoute element={<EditSales />} />} />
-        <Route path="/purchase-sale-list" element={<ProtectedRoute element={<PurchaseSale />} />} />
+        <Route path="/purchase-tiles-list" element={<ProtectedRoute element={<PurchaseSale />} />} />
         <Route path="/purchase-granite-list" element={<ProtectedRoute element={<PurchaseGraniteList />} />} />
         <Route path="/view-purchase/:id" element={<ProtectedRoute element={<ViewPurchase />} />} />
+        <Route path="/view-purchase-tiles/:id" element={<ProtectedRoute element={<ViewPurchaseTiles />} />} />
+        <Route path="/stock-form" element={<ProtectedRoute element={<StockForm />} />} />
+        <Route path="/stock-report" element={<ProtectedRoute element={<StockReport />} />} />
         <Route
           path="/add-daybook"
           element={<ProtectedRoute element={<AdddayBook />} />}

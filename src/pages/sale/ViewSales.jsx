@@ -12,6 +12,10 @@ import { CircularProgress } from "@mui/material";
 import moment from "moment";
 import { BiSolidFilePdf } from "react-icons/bi";
 import { IoPrint } from "react-icons/io5";
+import { MdKeyboardBackspace } from "react-icons/md";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+
 
 const ViewSales = () => {
   const { id } = useParams();
@@ -36,15 +40,29 @@ const ViewSales = () => {
     });
   }, []);
 
-  const handleExportWithFunction = () => {
-    console.log("calling");
-    // savePDF(componentRef.current, {
-    //   paperSize: "A4",
-    //   orientation: "vertical",
-    //   scale: 0.8,
-    // });
+  const handleSavePDF = () => {
+    const input = componentRef.current;
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 0;
+      pdf.addImage(
+        imgData,
+        "PNG",
+        imgX,
+        imgY,
+        imgWidth * ratio,
+        imgHeight * ratio
+      );
+      pdf.save("sales.pdf");
+    });
   };
-
   return (
     <Layout>
       <div>
@@ -56,36 +74,36 @@ const ViewSales = () => {
         {!loader && (
           <>
             <div className="page-header mb-4 mt-4">
-              <h3 className="text-lg font-bold">
-                {/* <Link to="/saleList">
-                <i className="mdi mdi-keyboard-backspace text-black bg-white rounded-full p-2"></i>
-              </Link> */}
+              <h3 className="flex text-xl font-bold">
+              <Link to="/sale-list">
+                <MdKeyboardBackspace className=" text-white bg-[#464D69] p-1 w-10 h-8 cursor-pointer rounded-2xl" />
+              </Link> &nbsp;
                 Sales
               </h3>
             </div>
             <div className="flex justify-center">
               <div className="w-full max-w-5xl">
                 <div className="bg-white shadow-lg p-6 rounded-lg">
-                  <div className="grid grid-cols-2 mb-4">
-                    <div className="flex justify-center">
+                <div className="flex justify-end mr-5 mb-4">
+                    <div >
                       <button
+                      onClick={handleSavePDF}
                         // onClick={printReceipt}
-                        className="flex items-center text-blue-600 hover:text-blue-800"
+                        className="flex text-xl font-bold items-center text-blue-600 hover:text-blue-800"
                       >
-                        <span className="mr-2">
-                          <BiSolidFilePdf />
+                        <span className="mr-2 text-xl font-bold">
+                          <BiSolidFilePdf /> 
                         </span>{" "}
                         PDF
                       </button>
                     </div>
-                    <div className="flex justify-center">
+                    {/* <div className="flex justify-center">
                       <button
-                        // onClick={printReceipt}
                         className="flex items-center text-blue-600 hover:text-blue-800"
                       >
                         <span className="mr-2">🖨️</span> Print Letter
                       </button>
-                    </div>
+                    </div> */}
 
                     {/* <ReactToPrint
                     trigger={() => (

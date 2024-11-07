@@ -16,32 +16,29 @@ import { MdKeyboardBackspace } from "react-icons/md";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-const ViewEstimate = () => {
-  const { id } = useParams();
-  const componentRef = useRef(null);
 
+const ViewPurchaseTiles = () => {
+  const { id } = useParams();
+  const componentRef = useRef();
 
   const [loader, setLoader] = useState(false);
-  const [estimate, setEstimate] = useState([]);
-  const [estimateSub, setEstimateSub] = useState([]);
+  const [purchase, setPurchase] = useState([]);
+  const [purchaseSub, setPurchaseSub] = useState([]);
   let total = 0;
 
   useEffect(() => {
     axios({
-      url: `${BASE_URL}/api/web-fetch-estimate-by-id/${id}`,
+      url: `${BASE_URL}/api/web-fetch-purchase-by-id/${id}`,
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     }).then((res) => {
-        setEstimate(res.data.estimate);
-      setEstimateSub(res.data.estimateSub);
+        setPurchase(res.data.purchase);
+        setPurchaseSub(res.data.purchaseSub);
       setLoader(false);
     });
   }, []);
-
- 
-   
 
   const handleSavePDF = () => {
     const input = componentRef.current;
@@ -63,9 +60,10 @@ const ViewEstimate = () => {
         imgWidth * ratio,
         imgHeight * ratio
       );
-      pdf.save("estimate.pdf");
+      pdf.save("purchase-tiles.pdf");
     });
   };
+
   return (
     <Layout>
       <div>
@@ -76,22 +74,23 @@ const ViewEstimate = () => {
         )}
         {!loader && (
           <>
-            <div className="flex page-header mb-4 mt-4">
-              <h3 className="flex text-lg font-bold">
-                <Link to="/estimate-list">
+            <div className="page-header mb-4 mt-4">
+              <h3 className="flex text-xl font-bold">
+              <Link to="/purchase-tiles-list">
                 <MdKeyboardBackspace className=" text-white bg-[#464D69] p-1 w-10 h-8 cursor-pointer rounded-2xl" />
               </Link>
-               &nbsp;  Estimate 
-              </h3> 
+              
+               &nbsp;
+                Purchase Tiles
+              </h3>
             </div>
             <div className="flex justify-center">
               <div className="w-full max-w-5xl">
                 <div className="bg-white shadow-lg p-6 rounded-lg">
-                  <div className="flex justify-end mr-5 mb-4">
+                <div className="flex justify-end mr-5 mb-4">
                     <div >
                       <button
                       onClick={handleSavePDF}
-                        // onClick={printReceipt}
                         className="flex text-xl font-bold items-center text-blue-600 hover:text-blue-800"
                       >
                         <span className="mr-2 text-xl font-bold">
@@ -104,7 +103,7 @@ const ViewEstimate = () => {
                       <button
                         className="flex items-center text-blue-600 hover:text-blue-800"
                       >
-                        <span className="mr-2">🖨️</span> Print Letter
+                        <span className="mr-2">🖨️</span> Print 
                       </button>
                     </div> */}
 
@@ -124,25 +123,28 @@ const ViewEstimate = () => {
                   >
                     <div className="text-center border p-4 space-y-1">
                       <h3 className="text-2xl font-semibold">
-                      ESTIMATE
+                        JAJU’S FLOORING CONCEPTS
                       </h3>
+                      <small>new 80 ft sompura, sriniwaspura road, Banakshankari 6th Stage 11th Block, Srinivaspura, Bengaluru, Karnataka 560098</small><br/>
+                      <small>Phone : 097420 42097 Email : </small>
+                      <h4 className="text-xl font-semibold">PURCHASE</h4>
                     </div>
 
                     <div className="grid grid-cols-2  !m-0">
                       <div className="flex justify-center border-r border-gray-300 pr-3 m-2">
                         <span>Date:</span>{" "}
                         <span>
-                          {moment(estimate.estimate_date).format("DD-MM-YYYY")}
+                          {moment(purchase.purchase_date).format("DD-MM-YYYY")}
                         </span>
                       </div>
                       <div className="flex justify-center pl-3 m-2">
-                        <span>Estimate No:</span> <span>{estimate.estimate_no}</span>
+                        <span>Purchase No:</span> <span>{purchase.purchase_no}</span>
                       </div>
                     </div>
 
                     <div className="border p-2">
-                      <span className="font-semibold">Customer:</span>{" "}
-                      <span>{estimate.estimate_customer}</span>
+                      <span className="font-semibold">Supplier:</span>{" "}
+                      <span>{purchase.purchase_supplier}</span>
                     </div>
 
                     <div className="overflow-auto">
@@ -167,114 +169,37 @@ const ViewEstimate = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {estimateSub.map((dataSumm, key) => (
+                          {purchaseSub.map((dataSumm, key) => (
                             <tr className="border-b" key={key}>
                               <td className="py-2 px-4 border-r">{key + 1}</td>
                               <td className="py-2 px-4 border-r">
-                                {dataSumm.estimate_sub_item}
+                                {dataSumm.purchase_sub_item}
                               </td>
                               <td className="py-2 px-4 border-r">
-                                {dataSumm.estimate_sub_qnty}
+                                {dataSumm.purchase_sub_qnty}
                               </td>
                               <td className="py-2 px-4 border-r">
-                                {dataSumm.estimate_sub_rate}
+                                {dataSumm.purchase_sub_rate}
                               </td>
                               <td className="py-2 px-4">
-                                {dataSumm.estimate_sub_amount}
+                                {dataSumm.purchase_sub_amount}
                                 <span className="hidden">
-                                  {(total += dataSumm.estimate_sub_amount)}
+                                  {(total += dataSumm.purchase_sub_amount)}
                                 </span>
                               </td>
                             </tr>
                           ))}
                         </tbody>
                         <tfoot>
-                          <tr className="border-red-300">
-                            <td
-                              colSpan="4"
-                              className="text-right  font-semibold pr-4 border-r border-b"
-                            >
-                              Sub-Total
-                            </td>
-                            <td className="text-right pr-4 border-r border-b">
-                              {total}
-                            </td>
-                          </tr>
                           <tr>
                             <td
                               colSpan="4"
-                              className="text-right  font-semibold pr-4 border-r border-b"
-                            >
-                              Tax
-                            </td>
-                            <td className="text-right pr-4 border-r border-b">
-                              {estimate.estimate_tax}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              colSpan="4"
-                              className="text-right font-semibold pr-4 border-r border-b"
-                            >
-                              Tempo Charges
-                            </td>
-                            <td className="text-right pr-4 border-r border-b">
-                              {estimate.estimate_tempo}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              colSpan="4"
-                              className="text-right font-semibold pr-4 border-r border-b"
-                            >
-                              Loading / Unloading Charges
-                            </td>
-                            <td className="text-right pr-4 border-r border-b">
-                              {estimate.estimate_loading}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              colSpan="4"
-                              className="text-right font-semibold pr-4 border-r border-b"
-                            >
-                              Other Charges
-                            </td>
-                            <td className="text-right pr-4 border-r border-b">
-                            {estimate.estimate_other}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              colSpan="4"
-                              className="text-right font-semibold pr-4 border-r border-b"
+                              className="text-right font-semibold pr-4 p-2 border-r border-b"
                             >
                               Total
                             </td>
-                            <td className="text-right pr-4 font-bold border-r border-b">
-                              {estimate.estimate_gross}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              colSpan="4"
-                              className="text-right font-semibold pr-4 border-r border-b"
-                            >
-                              Advance Received
-                            </td>
-                            <td className="text-right pr-4 border-r border-b">
-                            {estimate.estimate_advance}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              colSpan="4"
-                              className="text-right font-semibold pr-4 border-r border-b"
-                            >
-                              Balance
-                            </td>
-                            <td className="text-right pr-4 font-bold border-r border-b">
-                              {estimate.estimate_balance}
+                            <td className="text-center pr-4 font-bold border-r border-b">
+                              {total}
                             </td>
                           </tr>
                         </tfoot>
@@ -291,4 +216,4 @@ const ViewEstimate = () => {
   );
 };
 
-export default ViewEstimate;
+export default ViewPurchaseTiles;

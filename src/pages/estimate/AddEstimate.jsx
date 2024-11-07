@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button } from "reactstrap";
 import { Link } from "react-router-dom";
-// import Select from "react-select";
 import { toast } from "react-toastify";
 import BASE_URL, { baseURL } from "../../base/BaseUrl";
-import { IconButton, MenuItem, TextField } from "@mui/material";
+import { IconButton, MenuItem, Button, TextField } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import Layout from "../../layout/Layout";
-// import "./dailyBook.css";
+import Fields from "../../common/TextField/TextField";
+import { MdKeyboardBackspace } from "react-icons/md";
+import { Input } from "@material-tailwind/react";
+import { FaPlus } from "react-icons/fa";
 
 const type = [
   {
@@ -34,10 +35,11 @@ const AddEstimate = (props) => {
   today = mm + "/" + dd + "/" + yyyy;
   var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
+  const [currentYear, setCurrentYear] = useState(null);
 
   const [estimate, setEstimate] = useState({
     estimate_date: todayback,
-    estimate_year: "2023-24",
+    estimate_year: currentYear,
     estimate_type: "",
     estimate_customer: "",
     estimate_address: "",
@@ -55,22 +57,11 @@ const AddEstimate = (props) => {
     estimate_sub_data: "",
   });
 
-  // const useTemplate = {
-  //   type: "",
-  //   item: "",
-  //   qnty_in_piece: "",
-  //   qnty_in_sqr: "",
-  //   rate: "",
-  //   amount: "",
-  // };
-
   const useTemplate2 = {
     received_about: "",
     received_amount: "",
     received_about_new: "",
   };
-
-  // const [payment, setPayment] = useState([useTemplate]);
 
   const [received, setReceived] = useState([useTemplate2]);
 
@@ -79,8 +70,6 @@ const AddEstimate = (props) => {
   const [estimate_ref, setEstimateRef] = useState([]);
 
   const [received_count, setReceivedCount] = useState(1);
-
-  // const [accountName, setaccountName] = useState([]);
 
   const [productTypeGroup, setProductTypeGroup] = useState([]);
 
@@ -96,8 +85,25 @@ const AddEstimate = (props) => {
   const [users, setUsers] = useState([useTemplate]);
   const [estimate_count, setCount] = useState(1);
 
+
+  useEffect(() => {
+    var theLoginToken = localStorage.getItem("token");
+
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + theLoginToken,
+      },
+    };
+
+    fetch(BASE_URL + "/api/web-fetch-year", requestOptions)
+      .then((response) => response.json())
+      .then((data) => setCurrentYear(data.year?.current_year));
+  }, []);
+
+
+
   const addItem = () => {
-    console.log("clicking");
     setUsers([...users, useTemplate]);
     setCount(estimate_count + 1);
   };
@@ -547,7 +553,7 @@ const AddEstimate = (props) => {
     setIsButtonDisabled(true);
     const formData = {
       estimate_date: estimate.estimate_date,
-      estimate_year: estimate.estimate_year,
+      estimate_year: currentYear,
       estimate_customer: estimate.estimate_customer,
       estimate_address: estimate.estimate_address,
       estimate_mobile: estimate.estimate_mobile,
@@ -598,15 +604,18 @@ const AddEstimate = (props) => {
     <Layout>
       <div>
         <div className="flex justify-between mb-4 mt-6">
-          <h1 className="text-2xl text-[#464D69] font-semibold ml-2 content-center">
-            Add Estimate
+          <h1 className="flex text-2xl text-[#464D69] font-semibold ml-2 content-center">
+            <Link to="/estimate-list">
+              <MdKeyboardBackspace className=" text-white bg-[#464D69] p-1 w-10 h-8 cursor-pointer rounded-2xl" />
+            </Link>{" "}
+            &nbsp; Add Estimate
           </h1>
-          <h3 className="text-2xl text-[#464D69] font-semibold ml-2 content-center">
+          <h3 className="text-xl text-[#464D69] font-semibold ml-2 content-center">
             Estimate No : <b>{estimate_ref}</b>
           </h3>
         </div>
         <div className="row">
-          <div className="col-md-12 grid-margin stretch-card">
+          <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
             <div className="card">
               <div className="card-body">
                 <form autoComplete="off">
@@ -614,6 +623,7 @@ const AddEstimate = (props) => {
                     <div className="form-group">
                       <TextField
                         fullWidth
+                        size="small"
                         required
                         type="date"
                         label="Date"
@@ -628,6 +638,7 @@ const AddEstimate = (props) => {
                       <TextField
                         fullWidth
                         required
+                        size="small"
                         label="Customer"
                         autoComplete="Name"
                         name="estimate_customer"
@@ -639,9 +650,9 @@ const AddEstimate = (props) => {
                     <div className="form-group">
                       <TextField
                         fullWidth
+                        size="small"
                         type="tel"
-                        inputProps={{ maxLength: 10 }}
-                        required
+                        maxLength={10}
                         label="Mobile No"
                         autoComplete="Name"
                         name="estimate_mobile"
@@ -652,10 +663,9 @@ const AddEstimate = (props) => {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                     <div className="form-group col-span-3">
-                      <TextField
-                        fullWidth
-                        required
-                        label="Address"
+                      <Fields
+                        type="textField"
+                        title="Address"
                         autoComplete="Name"
                         name="estimate_address"
                         value={estimate.estimate_address}
@@ -663,168 +673,131 @@ const AddEstimate = (props) => {
                       />
                     </div>
                     <div className="form-group">
-                      <TextField
-                        fullWidth
-                        label="Item Type"
-                        autoComplete="Name"
-                        required
-                        SelectProps={{
-                          MenuProps: {},
-                        }}
-                        select
+                      <Fields
+                        required={true}
+                        title="Item Type"
+                        type="estimateItemDropdown"
                         name="estimate_item_type"
                         value={estimate.estimate_item_type}
                         onChange={(e) => onInputChange(e)}
-                      >
-                        {productTypeGroup.map((fabric, key) => (
-                          <MenuItem key={key} value={fabric.product_type_group}>
-                            {fabric.product_type_group}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-
-                      {/* {user.received_about === "New Value" && (
-                                <TextField
-                                  label="Account"
-                                  autoComplete="Name"
-                                  required
-                                  name="item_type"
-                                  value={dayBook.item_type}
-                                  onChange={(e) => onChangeReceived(e, index)}
-                                  fullWidth
-                                />
-                              )} */}
+                        options={productTypeGroup}
+                      />
                     </div>
                   </div>
                   <hr />
-                  <div className="row mb-4 mt-3">
-                    <div className="col-sm-12 col-md-4 col-xl-6">
+                  <div>
+                    <div>
                       {users.map((user, index) => (
-                        <div className="row " key={index}>
-                          <div className="grid grid-cols-1 md:grid-cols-7 gap-6 mb-6">
-                            <div className="form-group">
-                              {users.received_about !== "New Value" && (
-                                <TextField
-                                  fullWidth
-                                  label="Type"
-                                  autoComplete="Name"
-                                  required
-                                  SelectProps={{
-                                    MenuProps: {},
-                                  }}
-                                  select
-                                  name="estimate_sub_type"
-                                  value={user.estimate_sub_type}
-                                  onChange={(e) => onChange(e, index)}
-                                >
-                                  {type.map((fabric, key) => (
-                                    <MenuItem
-                                      key={fabric.value}
-                                      value={fabric.value}
-                                    >
-                                      {fabric.label}
-                                    </MenuItem>
-                                  ))}
-                                </TextField>
-                              )}
-                            </div>
-                            <div className="form-group">
-                              <TextField
-                                fullWidth
-                                label="Item"
-                                autoComplete="Name"
-                                ref={inputRef}
-                                required
-                                name="estimate_sub_item"
-                                value={user.estimate_sub_item}
-                                onChange={(e) => onChange(e, index)}
-                              />
-                            </div>
-                            <div className="form-group">
-                              <TextField
-                                fullWidth
-                                label="Qnty in Piece"
-                                autoComplete="Name"
-                                ref={inputRef}
-                                required
-                                name="estimate_sub_qnty"
-                                value={user.estimate_sub_qnty}
-                                onChange={(e) => {
-                                  onChange(e, index);
-                                }}
-                              />
-                            </div>
-                            <div className="form-group">
-                              <TextField
-                                fullWidth
-                                label="Qnty in Sqr ft"
-                                autoComplete="Name"
-                                ref={inputRef}
-                                required
-                                name="estimate_sub_qnty_sqr"
-                                value={user.estimate_sub_qnty_sqr}
-                                onChange={(e) => {
-                                  onChange(e, index);
-                                  QntyCal(index);
-                                }}
-                              />
-                            </div>{" "}
-                            <div className="form-group">
-                              <TextField
-                                fullWidth
-                                label="Rate"
-                                autoComplete="Name"
-                                ref={inputRef}
-                                required
-                                name="estimate_sub_rate"
-                                value={user.estimate_sub_rate}
-                                onChange={(e) => {
-                                  onChange(e, index);
-                                  RateCal(index);
-                                }}
-                              />
-                            </div>{" "}
-                            <div className="form-group">
-                              <TextField
-                                fullWidth
-                                label="Amount"
-                                autoComplete="Name"
-                                ref={inputRef}
-                                required
-                                name="estimate_sub_amount"
-                                value={user.estimate_sub_amount}
-                                onChange={(e) => onChange(e, index)}
-                              />
-                            </div>
-                            <div className="col-sm-12 col-md-12 col-xl-1">
-                              <IconButton
-                                tabIndex="-1"
-                                onClick={() => removeUser(index)}
-                              >
-                                <Delete />
-                              </IconButton>
-                            </div>
+                        <div
+                          key={index}
+                          className="grid grid-cols-1 md:grid-cols-7 gap-6 mb-6 mt-3"
+                        >
+                          <div className="form-group">
+                            <Fields
+                              required={true}
+                              title="Type"
+                              type="whatsappDropdown"
+                              name="estimate_sub_type"
+                              value={user.estimate_sub_type}
+                              onChange={(e) => onChange(e, index)}
+                              options={type}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <TextField
+                            size="small"
+                              label="Item"
+                              autoComplete="Name"
+                              ref={inputRef}
+                              required
+                              name="estimate_sub_item"
+                              value={user.estimate_sub_item}
+                              onChange={(e) => onChange(e, index)}
+                            />
+                          </div>
+                          <div className="form-group ">
+                            <TextField
+                              label="Qnty in Piece"
+                              autoComplete="Name"
+                              ref={inputRef}
+                              required
+                              size="small"
+                              name="estimate_sub_qnty"
+                              value={user.estimate_sub_qnty}
+                              onChange={(e) => {
+                                onChange(e, index);
+                              }}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <TextField
+                              label="Qnty in Sqr ft"
+                              autoComplete="Name"
+                              ref={inputRef}
+                              required
+                              size="small"
+                              name="estimate_sub_qnty_sqr"
+                              value={user.estimate_sub_qnty_sqr}
+                              onChange={(e) => {
+                                onChange(e, index);
+                                QntyCal(index);
+                              }}
+                            />
+                          </div>{" "}
+                          <div className="form-group">
+                            <TextField
+                              label="Rate"
+                              autoComplete="Name"
+                              size="small"
+                              ref={inputRef}
+                              required
+                              name="estimate_sub_rate"
+                              value={user.estimate_sub_rate}
+                              onChange={(e) => {
+                                onChange(e, index);
+                                RateCal(index);
+                              }}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <TextField
+                              label="Amount"
+                              autoComplete="Name"
+                              size="small"
+                              ref={inputRef}
+                              required
+                              disabled
+                              labelProps={{
+                                className: "!text-gray-500",
+                              }}
+                              name="estimate_sub_amount"
+                              value={user.estimate_sub_amount}
+                              onChange={(e) => onChange(e, index)}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <IconButton
+                              tabIndex="-1"
+                              onClick={() => removeUser(index)}
+                            >
+                              <Delete />
+                            </IconButton>
                           </div>
                         </div>
                       ))}
 
                       <div className="row mt-4">
                         <div className="col-sm-12 col-md-12 col-xl-12">
-                          <button
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-                            color="primary"
-                            variant="contained"
-                            onClick={(e) => addItem(e)}
-                          >
-                            Add More
-                          </button>
+                          <Button onClick={(e) => addItem(e)}>
+                            <FaPlus /> &nbsp; Add More
+                          </Button>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 mt-3">
                     <div className="form-group">
-                      <TextField
+                      <Input
                         fullWidth
                         type="text"
                         label="Tax"
@@ -836,7 +809,7 @@ const AddEstimate = (props) => {
                     </div>
 
                     <div className="form-group ">
-                      <TextField
+                      <Input
                         fullWidth
                         label="Tempo Charges"
                         autoComplete="Name"
@@ -847,7 +820,7 @@ const AddEstimate = (props) => {
                     </div>
 
                     <div className="form-group">
-                      <TextField
+                      <Input
                         fullWidth
                         type="text"
                         label="Loading/Unloading Charges"
@@ -858,7 +831,7 @@ const AddEstimate = (props) => {
                       />
                     </div>
                     <div className="form-group">
-                      <TextField
+                      <Input
                         fullWidth
                         type="text"
                         label="Other Charges"
@@ -871,7 +844,7 @@ const AddEstimate = (props) => {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                     <div className="form-group">
-                      <TextField
+                      <Input
                         fullWidth
                         type="text"
                         label="Gross Total"
@@ -884,7 +857,7 @@ const AddEstimate = (props) => {
                     </div>
 
                     <div className="form-group ">
-                      <TextField
+                      <Input
                         fullWidth
                         label="Advance"
                         autoComplete="Name"
@@ -895,7 +868,7 @@ const AddEstimate = (props) => {
                     </div>
 
                     <div className="form-group">
-                      <TextField
+                      <Input
                         fullWidth
                         type="text"
                         disabled
@@ -913,14 +886,14 @@ const AddEstimate = (props) => {
                       onClick={(e) => onSubmit(e)}
                       className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                       color="primary"
-                      // disabled={isButtonDisabled}
+                      disabled={isButtonDisabled}
                     >
-                      Submit
+                      {isButtonDisabled ? "Submitting" : "Submit"}
                     </button>
                     <Link to="/estimate-list">
-                      <Button className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
+                      <button className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
                         Cancel
-                      </Button>
+                      </button>
                     </Link>
                   </div>
                 </form>

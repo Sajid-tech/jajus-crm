@@ -9,6 +9,7 @@ import BASE_URL, { baseURL } from "../../base/BaseUrl";
 import { IconButton, MenuItem, TextField } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import Layout from "../../layout/Layout";
+import { MdKeyboardBackspace } from "react-icons/md";
 // import "./dailyBook.css";
 
 const EditPurchaseTiles = () => {
@@ -25,10 +26,10 @@ const EditPurchaseTiles = () => {
   today = mm + "/" + dd + "/" + yyyy;
   var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
-
+  const [currentYear, setCurrentYear] = useState(null);
   const [purchase, setPurchaseTiles] = useState({
     purchase_date: todayback,
-    purchase_year: "2023-24",
+    purchase_year: currentYear,
     purchase_type: "Tiles",
     purchase_supplier: "",
     purchase_bill_no: "",
@@ -52,6 +53,22 @@ const EditPurchaseTiles = () => {
 
   const [purchase__count, setCount] = useState(1);
 
+
+
+  useEffect(() => {
+    var theLoginToken = localStorage.getItem("token");
+
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + theLoginToken,
+      },
+    };
+
+    fetch(BASE_URL + "/api/web-fetch-year", requestOptions)
+      .then((response) => response.json())
+      .then((data) => setCurrentYear(data.year?.current_year));
+  }, []);
 
   useEffect(() => {
     axios({
@@ -107,7 +124,6 @@ const EditPurchaseTiles = () => {
   };
 
   const [estimate_ref, setEstimateRef] = useState([]);
-  console.log(estimate_ref , "estimate_ref")
   useEffect(() => {
     var theLoginToken = localStorage.getItem("login");
 
@@ -125,7 +141,7 @@ const EditPurchaseTiles = () => {
 
   const [estimate_sub, setEstimateSub] = useState([]);
   useEffect(() => {
-    var theLoginToken = localStorage.getItem("login");
+    var theLoginToken = localStorage.getItem("token");
 
     const requestOptions = {
       method: "GET",
@@ -135,7 +151,7 @@ const EditPurchaseTiles = () => {
     };
 
     fetch(
-      baseURL + "/web-fetch-estimate-sub/" + purchase.purchase_estimate_ref,
+      BASE_URL + "/api/web-fetch-estimate-sub/" + purchase.purchase_estimate_ref,
       requestOptions
     )
       .then((response) => response.json())
@@ -221,13 +237,13 @@ const EditPurchaseTiles = () => {
   const onSubmit = (e) => {
     let data = {
       purchase_date: purchase.purchase_date,
-      purchase_year: purchase.purchase_year,
+      purchase_year: currentYear,
       purchase_type: purchase.purchase_type,
       purchase_supplier: purchase.purchase_supplier,
       purchase_bill_no: purchase.purchase_bill_no,
       purchase_other: purchase.purchase_other,
       purchase_amount: purchase.purchase_amount,
-      purchase_no_of_count: purchase__count,
+      purchase_no_of_count: purchase.purchase_no_of_count,
       purchase_estimate_ref: purchase.purchase_estimate_ref,
       purchase_sub_data: users,
     };
@@ -246,7 +262,7 @@ const EditPurchaseTiles = () => {
       }).then((res) => {
         if (res.data.code == "200") {
           toast.success("Purchase Updated Sucessfully");
-          navigate("/purchase-sale-list");
+          navigate("/purchase-tiles-list");
         } else {
           toast.error("Purchase Updated for a day");
           setIsButtonDisabled(false);
@@ -259,14 +275,19 @@ const EditPurchaseTiles = () => {
     <Layout>
       <div>
         <div className="flex mb-4 mt-6">
-          <h1 className="text-2xl text-[#464D69] font-semibold ml-2 content-center">
+          <h1 className="flex text-2xl text-[#464D69] font-semibold ml-2 content-center">
+          <Link to="/purchase-tiles-list">
+                <MdKeyboardBackspace className=" text-white bg-[#464D69] p-1 w-10 h-8 cursor-pointer rounded-2xl" />
+              </Link>
+              
+               &nbsp;
             Edit Purchase Tiles
           </h1>
         </div>
         <div className="row">
           <div className="col-md-12 grid-margin stretch-card">
-            <div className="card">
-              <div className="card-body">
+       
+            <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
                 <form id="addIndiv" autoComplete="off">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div className="form-group">
@@ -274,6 +295,7 @@ const EditPurchaseTiles = () => {
                         fullWidth
                         required
                         type="date"
+                        size="small"
                         label="Date"
                         autoComplete="Name"
                         name="purchase_date"
@@ -286,6 +308,7 @@ const EditPurchaseTiles = () => {
                       <TextField
                         fullWidth
                         required
+                        size="small"
                         label="Supplier"
                         autoComplete="Name"
                         name="purchase_supplier"
@@ -298,6 +321,7 @@ const EditPurchaseTiles = () => {
                       <TextField
                         fullWidth
                         required
+                        size="small"
                         label="Ref Bill No"
                         autoComplete="Name"
                         name="purchase_bill_no"
@@ -310,8 +334,8 @@ const EditPurchaseTiles = () => {
                     <div className="form-group">
                       <TextField
                         fullWidth
-                        required
                         label="Other Amount"
+                        size="small"
                         autoComplete="Name"
                         name="purchase_other"
                         value={purchase.purchase_other}
@@ -323,6 +347,8 @@ const EditPurchaseTiles = () => {
                         fullWidth
                         required
                         label="Total Amount"
+                        disabled
+                        size="small"
                         autoComplete="Name"
                         name="purchase_amount"
                         value={purchase.purchase_amount}
@@ -334,6 +360,7 @@ const EditPurchaseTiles = () => {
                         fullWidth
                         label="Estimate Ref"
                         autoComplete="Name"
+                        size="small"
                         required
                         SelectProps={{
                           MenuProps: {},
@@ -343,7 +370,7 @@ const EditPurchaseTiles = () => {
                         value={purchase.purchase_estimate_ref}
                         onChange={(e) => onInputChange(e)}
                       >
-                        {estimate_ref.map((fabric, key) => (
+                        {estimate_sub.map((fabric, key) => (
                           <MenuItem
                             key={fabric.estimate_ref}
                             value={fabric.estimate_ref}
@@ -364,6 +391,7 @@ const EditPurchaseTiles = () => {
                               <TextField
                                 fullWidth
                                 label="Item"
+                                size="small"
                                 autoComplete="Name"
                                 ref={inputRef}
                                 required
@@ -377,6 +405,7 @@ const EditPurchaseTiles = () => {
                                 fullWidth
                                 label="Qnty"
                                 autoComplete="Name"
+                                size="small"
                                 ref={inputRef}
                                 required
                                 name="purchase_sub_qnty"
@@ -392,6 +421,7 @@ const EditPurchaseTiles = () => {
                                 fullWidth
                                 label="Rate"
                                 autoComplete="Name"
+                                size="small"
                                 ref={inputRef}
                                 required
                                 name="purchase_sub_rate"
@@ -407,6 +437,8 @@ const EditPurchaseTiles = () => {
                                 fullWidth
                                 label="Amount"
                                 autoComplete="Name"
+                                disabled
+                                size="small"
                                 ref={inputRef}
                                 required
                                 name="purchase_sub_amount"
@@ -432,7 +464,7 @@ const EditPurchaseTiles = () => {
                     >
                       Update
                     </button>
-                    <Link to="/purchase-sale-list">
+                    <Link to="/purchase-tiles-list">
                       <Button className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">
                         Cancel
                       </Button>
@@ -440,7 +472,7 @@ const EditPurchaseTiles = () => {
                   </div>
                 </form>
               </div>
-            </div>
+        
           </div>
         </div>
       </div>

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import styles from "./trialbalance.module.css";
-import Layout from "../../../layout/Layout";
-import { Button, Grid2, MenuItem, TextField } from "@mui/material";
-import BASE_URL, { baseURL } from "../../../base/BaseUrl";
+import styles from "./stocks.module.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Input } from "@material-tailwind/react";
+import BASE_URL from "../../base/BaseUrl";
+import Layout from "../../layout/Layout";
 
-const TrialBalance = () => {
+const StockForm = () => {
   let navigate = useNavigate();
 
   var today = new Date();
@@ -20,11 +19,10 @@ const TrialBalance = () => {
   var todayback = yyyy + "-" + mm + "-" + dd;
   const [currentYear, setCurrentYear] = useState(null);
 
-  const [trialBalance, setTrialBalanceDownload] = useState({
+  const [stocks, setStocksDownload] = useState({
     from_date: currentYear,
     to_date: todayback,
   });
-
 
   useEffect(() => {
     var theLoginToken = localStorage.getItem("token");
@@ -42,8 +40,8 @@ const TrialBalance = () => {
   }, []);
 
   const onInputChange = (e) => {
-    setTrialBalanceDownload({
-      ...trialBalance,
+    setStocksDownload({
+      ...stocks,
       [e.target.name]: e.target.value,
     });
   };
@@ -53,10 +51,9 @@ const TrialBalance = () => {
     var v = document.getElementById("addIndiv").checkValidity();
     var v = document.getElementById("addIndiv").reportValidity();
     if (v) {
-
-    localStorage.setItem("from_date", trialBalance.from_date);
-    localStorage.setItem("to_date", trialBalance.to_date);
-    navigate("/trialBalanceReport");
+      localStorage.setItem("from_date", stocks.from_date);
+      localStorage.setItem("to_date", stocks.to_date);
+      navigate("/stock-report");
     }
   };
 
@@ -66,12 +63,12 @@ const TrialBalance = () => {
     var v = document.getElementById("addIndiv").reportValidity();
     if (v) {
       let data = {
-        from_date: trialBalance.from_date,
-        to_date: trialBalance.to_date,
+        from_date: stocks.from_date,
+        to_date: stocks.to_date,
       };
 
       axios({
-        url: baseURL + "/web-download-trialBalance-report",
+        url: BASE_URL + "/api/web-download-stock-report",
         method: "POST",
         data,
         headers: {
@@ -82,14 +79,14 @@ const TrialBalance = () => {
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "trialBalance.csv");
+          link.setAttribute("download", "Stock.csv");
           document.body.appendChild(link);
           link.click();
-          toast.success("Trial Balance Report is Downloaded Successfully");
+          toast.success("Stock Report is Downloaded Successfully");
         })
         .catch((err) => {
-          
-          toast.error("Trial Balance Report is Not Downloaded");
+          console.log(err);
+          toast.error("Stock Report is Not Downloaded");
         });
     }
   };
@@ -97,50 +94,52 @@ const TrialBalance = () => {
   return (
     <Layout>
       <div className={styles["main-container"]}>
-        <h1>Trial Balance Form</h1>
+        <h1>Stocks Form</h1>
         <div className={styles["sub-container"]}>
           <form id="addIndiv" autoComplete="off">
             <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
-                <div>
-                  <Input
-                    fullWidth
-                    required
-                    label="From Date"
-                    type="date"
-                    InputLabelProps={{ shrink: true }}
-                    autoComplete="Name"
-                    name="from_date"
-                    value={trialBalance.from_date}
-                    onChange={(e) => onInputChange(e)}
-                  />
-                </div>
-                <div item>
-                  <Input
-                    fullWidth
-                    required
-                    label="To Date"
-                    type="date"
-                    InputLabelProps={{ shrink: true }}
-                    autoComplete="Name"
-                    name="to_date"
-                    value={trialBalance.to_date}
-                    onChange={(e) => onInputChange(e)}
-                  />
-                </div>
+              <div>
+                <Input
+                  fullWidth
+                  required
+                  label="From Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  autoComplete="Name"
+                  name="from_date"
+                  value={stocks.from_date}
+                  onChange={(e) => onInputChange(e)}
+                />
+              </div>
+              <div item>
+                <Input
+                  fullWidth
+                  required
+                  label="To Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  autoComplete="Name"
+                  name="to_date"
+                  value={stocks.to_date}
+                  onChange={(e) => onInputChange(e)}
+                />
+              </div>
             </div>
             <div className={styles["btn-main-container"]}>
-              <div >
+              <div>
                 <button
-                
-                className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-
-                color="primary" onClick={(e) => onReportView(e)}>
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+                  color="primary"
+                  onClick={(e) => onReportView(e)}
+                >
                   View
                 </button>
                 <button
-                                 className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
-
-                 onClick={(e) => onSubmit(e)}>Download</button>
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+                  onClick={(e) => onSubmit(e)}
+                >
+                  Download
+                </button>
               </div>
             </div>
           </form>
@@ -150,4 +149,4 @@ const TrialBalance = () => {
   );
 };
 
-export default TrialBalance;
+export default StockForm;

@@ -8,10 +8,12 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
-import { baseURL } from "../../../base/BaseUrl";
+import BASE_URL, { baseURL } from "../../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Input } from "@material-tailwind/react";
+import moment from "moment";
 
 const Ledger = () => {
   let navigate = useNavigate();
@@ -24,10 +26,26 @@ const Ledger = () => {
 
   today = mm + "/" + dd + "/" + yyyy;
   var todayback = yyyy + "-" + mm + "-" + dd;
+  const [currentYear, setCurrentYear] = useState(null);
+
+  useEffect(() => {
+    var theLoginToken = localStorage.getItem("token");
+
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + theLoginToken,
+      },
+    };
+
+    fetch(BASE_URL + "/api/web-fetch-year", requestOptions)
+      .then((response) => response.json())
+      .then((data) => setCurrentYear(data.year?.from_date));
+  }, []);
 
   const [trialBalance, setTrialBalanceDownload] = useState({
     account_name: null,
-    from_date: "2024-04-01",
+    from_date: currentYear,
     to_date: todayback,
   });
 
@@ -38,17 +56,7 @@ const Ledger = () => {
     });
   };
 
-  // useEffect(() => {
-  //     var isLoggedIn = localStorage.getItem("user_type_id");
-  //     if(!isLoggedIn){
-
-  //     window.location = "/login";
-
-  //     }else{
-
-  //     }
-
-  // });
+  
 
   const [accountName, setAccountName] = useState([]);
 
@@ -62,7 +70,7 @@ const Ledger = () => {
       },
     };
 
-    fetch(baseURL + "/web-fetch-ledger-accountname", requestOptions)
+    fetch(BASE_URL + "/api/web-fetch-ledger-accountname", requestOptions)
       .then((response) => response.json())
       .then((data) => setAccountName(data.mix));
   }, []);
@@ -91,7 +99,7 @@ const Ledger = () => {
       };
 
       axios({
-        url: baseURL + "/web-download-ledger-report-new",
+        url: BASE_URL + "/api/web-download-ledger-report-new",
         method: "POST",
         data,
         headers: {
@@ -108,7 +116,6 @@ const Ledger = () => {
           toast.success("Ledger Report is Downloaded Successfully");
         })
         .catch((err) => {
-          console.log(err);
           toast.error("Ledger Report is Not Downloaded");
         });
     }
@@ -120,83 +127,89 @@ const Ledger = () => {
         <h1>Ledger Form</h1>
         <div className={styles["sub-container"]}>
           <form id="addIndiv" autoComplete="off">
-            <div>
-              <Grid2 container spacing={3}>
-                <Grid2 item>
-                  <Autocomplete
-                    disablePortal
-                    options={accountName}
-                    getOptionLabel={(option) => option?.account_name || ""}
-                    sx={{ width: 350 }}
-                    value={
-                      accountName.find(
-                        (option) =>
-                          option.account_name === trialBalance.account_name
-                      ) || null
-                    }
-                    onChange={(event, newValue) =>
-                      onInputChange({
-                        target: {
-                          name: "account_name",
-                          value: newValue ? newValue.account_name : "",
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <Autocomplete
+                  disablePortal
+                  options={accountName}
+                  getOptionLabel={(option) => option?.account_name || ""}
+                  sx={{ width: 350 }}
+                  value={
+                    accountName.find(
+                      (option) =>
+                        option.account_name === trialBalance.account_name
+                    ) || null
+                  }
+                  onChange={(event, newValue) =>
+                    onInputChange({
+                      target: {
+                        name: "account_name",
+                        value: newValue ? newValue.account_name : "",
+                      },
+                    })
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Account Name"
+                      required
+                      InputLabelProps={{ shrink: true }}
+                      autoComplete="off"
+                      name="account_name"
+                      size="small"
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          padding: "1px",
                         },
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Account Name"
-                        variant="standard"
-                        required
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="account_name"
-                      />
-                    )}
-                  />
-                </Grid2>
-                <Grid2 item>
-                  <TextField
-                    fullWidth
-                    sx={{ width: 350 }}
-                    variant="standard"
-                    required
-                    label="From Date"
-                    type="date"
-                    InputLabelProps={{ shrink: true }}
-                    autoComplete="Name"
-                    name="from_date"
-                    value={trialBalance.from_date}
-                    onChange={(e) => onInputChange(e)}
-                  />
-                </Grid2>
-                <Grid2 item>
-                  <TextField
-                    fullWidth
-                    sx={{ width: 350 }}
-                    variant="standard"
-                    required
-                    label="To Date"
-                    type="date"
-                    InputLabelProps={{ shrink: true }}
-                    autoComplete="Name"
-                    name="to_date"
-                    value={trialBalance.to_date}
-                    onChange={(e) => onInputChange(e)}
-                  />
-                </Grid2>
-              </Grid2>
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div>
+                <Input
+                  fullWidth
+                  sx={{ width: 350 }}
+                  required
+                  label="From Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  autoComplete="Name"
+                  name="from_date"
+                  value={trialBalance.from_date}
+                  onChange={(e) => onInputChange(e)}
+                />
+              </div>
+              <div>
+                <Input
+                  fullWidth
+                  required
+                  label="To Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  autoComplete="Name"
+                  name="to_date"
+                  value={trialBalance.to_date}
+                  onChange={(e) => onInputChange(e)}
+                />
+              </div>
             </div>
             <div className={styles["btn-main-container"]}>
-              <div className={styles["btn-container"]}>
-                <Button
+              <div>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                   type="submit"
                   color="primary"
                   onClick={(e) => onReportView(e)}
                 >
                   View
-                </Button>
-                <Button onClick={(e) => onSubmit(e)}>Download</Button>
+                </button>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+                  onClick={(e) => onSubmit(e)}
+                >
+                  Download
+                </button>
               </div>
             </div>
           </form>
