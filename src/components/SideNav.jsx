@@ -313,6 +313,11 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
               }
           {/* Add more hardcoded routes here as needed */}
         </ul>
+         <div className="absolute bottom-4 left-0 right-0 text-center">
+          <Typography variant="small" color="white" className="opacity-50">
+            Updated on 14/06/2025
+          </Typography>
+        </div>
       </div>
     </aside>
   );
