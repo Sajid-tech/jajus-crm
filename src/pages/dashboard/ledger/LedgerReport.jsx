@@ -55,21 +55,21 @@ const LedgerReport = () => {
     });
   }, []);
 
-  const calculateTotalPayment = () => {
-    let total = 0;
-    payment.forEach((item) => {
-      total += item.payment_amount;
-    });
-    return total;
-  };
+ const calculateTotalPayment = () => {
+  let total = 0;
+  payment.forEach((item) => {
+    total += Number(item.payment_amount) || 0;
+  });
+  return total;
+};
 
-  const calculateTotalReceived = () => {
-    let total = 0;
-    received.forEach((item) => {
-      total += item.received_amount;
-    });
-    return total;
-  };
+const calculateTotalReceived = () => {
+  let total = 0;
+  received.forEach((item) => {
+    total += Number(item.received_amount) || 0;
+  });
+  return total;
+};
 
   // for save as pdf directly
   const handleSavePDF = () => {
